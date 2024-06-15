@@ -1,0 +1,16 @@
+project:
+  type: book
+
+book:
+  title: "Data mining with {tidymodels}"
+  author: "Youngrok Lee"
+  date: "6/15/2024"
+  chapters:
+    - index.qmd
+
+format:
+  html:
+    theme: cosmo
+
+
+
