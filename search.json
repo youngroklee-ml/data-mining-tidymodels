@@ -1,0 +1,12 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Data mining with {tidymodels}",
+    "section": "",
+    "text": "Preface\nThis is a book to convert example code on https://youngroklee-ml.github.io/data-mining-techniques/ into the {tidymodels} framework.",
+    "crumbs": [
+      "Preface"
+    ]
+  }
+]
