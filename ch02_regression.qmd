@@ -1,0 +1,293 @@
+# Regression
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+## Examples 2.3 - 2.5, 2.7, 2.10 - 2.11
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch2_reg1.csv")
+print(dat1)
+```
+
+
+### Ex 2.3: Estimate coefficients
+
+Use `{parsnip}` package, a part of `{tidymodels}`, that provide a unified modeling interface.
+
+Define a model type and engine.
+
+```{r}
+model <- 
+  linear_reg() |>
+  set_engine("lm") # "lm" is a default engine for `linear_reg()`
+```
+
+Estimate the model by calling `fit()` function with formula and training data.
+
+```{r}
+model_fit <- 
+  model |> 
+  fit(weight ~ age + height, data = dat1)
+```
+
+Let's print estimation results.
+
+```{r}
+print(model_fit)
+```
+
+`broom::tidy()` can extract coefficient statistics as data frame, including estimates and test statistics. Column `estimate` represents the coefficient estimates.
+
+```{r}
+tidy(model_fit)
+```
+
+
+### Ex 2.4: Estimate variance of error term
+
+`broom::glance()` provides model-level statistics.
+
+```{r}
+glance(model_fit)
+```
+
+`sigma` is the estimate of standard deviation of the error term, so just square it to estimate the variance of the error term.
+
+```{r}
+glance(model_fit)[["sigma"]]^2
+```
+
+### Ex 2.5: Test a model
+
+Call `extract_fit_engine()` when you need to explicitly use underlying `lm` object.
+
+```{r}
+extract_fit_engine(model_fit)
+```
+
+This is important when a function that you call require the underlying engine's object, not tidymodels framework's wrapper class. `anova()` function to conduct ANOVA test is one of such functions that you need to pass `lm` object.
+
+```{r}
+model_fit |> 
+  extract_fit_engine() |> 
+  anova()
+```
+
+
+### Ex 2.7: Test each coefficient
+
+As seen above, `tidy()` function returns data frame that contain test statistics.
+
+```{r}
+tidy(model_fit)
+```
+
+
+### Ex 2.10: Mean prediciton
+
+Let's create a new data set as a tidyverse data frame `tibble`.
+
+```{r}
+newdata <- tibble(age = 40, height = 170)
+```
+
+Make a mean prediction by calling `predict()` function, and append it to the data set as a column by calling `bind_cols()`.
+
+```{r}
+newdata |> 
+  bind_cols(predict(model_fit, new_data = newdata))
+```
+
+Also, add 95% confidence interval by calling `predict()` function with argument `type = "conf_int"`.
+
+```{r}
+newdata |> 
+  bind_cols(predict(model_fit, new_data = newdata)) |> 
+  bind_cols(predict(model_fit, new_data = newdata, type = "conf_int"))
+```
+
+
+### Ex 2.11 Prediction interval
+
+Instead of confidence interval, you can add prediction interval by passing argument `type = "pred_int"`.
+
+```{r}
+newdata |> 
+  bind_cols(predict(model_fit, new_data = newdata)) |> 
+  bind_cols(predict(model_fit, new_data = newdata, type = "pred_int"))
+```
+
+
+## Examples 2.14, 2.16
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch2_coil.csv")
+```
+
+
+### Ex 2.14: Indicator variable
+
+#### Set indicator variable
+
+Define feature engineering steps with `{recipes}` package, a part of `{tidymodels}`.
+
+First, call `recipe()` to define input variables, output variable, and data.
+
+```{r}
+rec <- 
+  recipe(y ~ temp + thick, data = dat1)
+```
+
+See the recipe recognizes that there are one outcome variable and two predictor variables.
+
+```{r}
+rec
+```
+
+
+You want to consider `thick` as a categorical variable by using `factor()` inside `step_mutate()` and create a dummy variable by adding `step_dummy()`.
+
+```{r}
+rec <- 
+  rec |> 
+  step_mutate(thick = factor(thick, levels = c(6, 2))) |> 
+  step_dummy(thick)
+```
+
+Now check that the updated recipe recognize `thick` as a dummy variable.
+
+```{r}
+rec
+```
+
+Of course, you can make write it as one pipeline
+
+```{r}
+rec <- 
+  recipe(y ~ temp + thick, data = dat1) |> 
+  step_mutate(thick = factor(thick, levels = c(6, 2))) |> 
+  step_dummy(thick)
+```
+
+Quickly see what the output would look like. Here, `prep()` is a function to train feature engineering, and `juice()` is a result of applying the feature engineering to training data.
+
+```{r}
+rec |> 
+  prep() |> 
+  juice()
+```
+
+
+#### Include feature engineering into a workflow
+
+Let's start with defining model type and engine as we did in the first example above.
+
+```{r}
+model <- 
+  linear_reg() |> 
+  set_engine("lm")
+```
+
+Now, let's define a "workflow" from `{workflows}` package, a part of `{tidymodels}`, to combine a recipe and a model.
+
+```{r}
+wflow <- 
+  workflow() |> 
+  add_recipe(rec) |> 
+  add_model(model) 
+```
+
+The workflow recognizes that `rec` is a preprocessor before estimating a regression model.
+
+```{r}
+wflow
+```
+
+Now, call `fit()` function by passing training data to estimate a regression model.
+
+```{r}
+lm_model <- 
+  wflow |> 
+  fit(dat1)
+```
+
+See the model estimation results.
+
+```{r}
+lm_model
+```
+
+You can still use `broom::tidy()` function to return coefficient-level statistics.
+
+```{r}
+tidy(lm_model)
+```
+
+
+### Ex 2.16: Interaction
+
+You can revise the workflow by updating recipe to include interaction term.
+
+#### Update recipe
+
+Add `step_interact()` to existing recipe to add interaction term. Because a dummy variable will be used in this step, use `starts_with("thick")` to capture dummy variable names, instead of using original variable name.
+
+```{r}
+rec_interaction <-
+  rec |> 
+  step_interact(terms = ~ temp:starts_with("thick"))
+```
+
+```{r}
+rec_interaction
+```
+
+Again, quickly check a resulting training data.
+
+```{r}
+rec_interaction |> 
+  prep() |> 
+  juice()
+```
+
+
+#### Update workflow
+
+Update workflow by calling `update_recipe()`.
+
+```{r}
+wflow_interaction <- 
+  wflow |> 
+  update_recipe(rec_interaction)
+```
+
+```{r}
+wflow_interaction
+```
+
+
+#### Estimate a model with the new workflow
+
+Call `fit()` function with the new workflow.
+
+```{r}
+lm_model_interaction <- 
+  wflow_interaction |> 
+  fit(dat1)
+```
+
+See estimated coefficients.
+
+```{r}
+tidy(lm_model_interaction)
+```
+
+
