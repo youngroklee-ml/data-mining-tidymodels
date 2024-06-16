@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data mining with {tidymodels} - 1&nbsp; Regression</title>
+<title>Data mining with {tidymodels} - 2&nbsp; Regression</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -114,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch02_regression.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Regression</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch02_regression.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Regression</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -142,13 +142,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./index.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Preface</span></a>
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="./ch02_regression.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Regression</span></span></a>
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Regression</span></span></a>
   </div>
 </li>
     </ul>
@@ -161,21 +161,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#examples-2.3---2.5-2.7-2.10---2.11" id="toc-examples-2.3---2.5-2.7-2.10---2.11" class="nav-link active" data-scroll-target="#examples-2.3---2.5-2.7-2.10---2.11"><span class="header-section-number">1.1</span> Examples 2.3 - 2.5, 2.7, 2.10 - 2.11</a>
+  <li><a href="#examples-2.3---2.5-2.7-2.10---2.11" id="toc-examples-2.3---2.5-2.7-2.10---2.11" class="nav-link active" data-scroll-target="#examples-2.3---2.5-2.7-2.10---2.11"><span class="header-section-number">2.1</span> Examples 2.3 - 2.5, 2.7, 2.10 - 2.11</a>
   <ul class="collapse">
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">1.1.1</span> Load data</a></li>
-  <li><a href="#ex-2.3-estimate-coefficients" id="toc-ex-2.3-estimate-coefficients" class="nav-link" data-scroll-target="#ex-2.3-estimate-coefficients"><span class="header-section-number">1.1.2</span> Ex 2.3: Estimate coefficients</a></li>
-  <li><a href="#ex-2.4-estimate-variance-of-error-term" id="toc-ex-2.4-estimate-variance-of-error-term" class="nav-link" data-scroll-target="#ex-2.4-estimate-variance-of-error-term"><span class="header-section-number">1.1.3</span> Ex 2.4: Estimate variance of error term</a></li>
-  <li><a href="#ex-2.5-test-a-model" id="toc-ex-2.5-test-a-model" class="nav-link" data-scroll-target="#ex-2.5-test-a-model"><span class="header-section-number">1.1.4</span> Ex 2.5: Test a model</a></li>
-  <li><a href="#ex-2.7-test-each-coefficient" id="toc-ex-2.7-test-each-coefficient" class="nav-link" data-scroll-target="#ex-2.7-test-each-coefficient"><span class="header-section-number">1.1.5</span> Ex 2.7: Test each coefficient</a></li>
-  <li><a href="#ex-2.10-mean-prediciton" id="toc-ex-2.10-mean-prediciton" class="nav-link" data-scroll-target="#ex-2.10-mean-prediciton"><span class="header-section-number">1.1.6</span> Ex 2.10: Mean prediciton</a></li>
-  <li><a href="#ex-2.11-prediction-interval" id="toc-ex-2.11-prediction-interval" class="nav-link" data-scroll-target="#ex-2.11-prediction-interval"><span class="header-section-number">1.1.7</span> Ex 2.11 Prediction interval</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">2.1.1</span> Load data</a></li>
+  <li><a href="#ex-2.3-estimate-coefficients" id="toc-ex-2.3-estimate-coefficients" class="nav-link" data-scroll-target="#ex-2.3-estimate-coefficients"><span class="header-section-number">2.1.2</span> Ex 2.3: Estimate coefficients</a></li>
+  <li><a href="#ex-2.4-estimate-variance-of-error-term" id="toc-ex-2.4-estimate-variance-of-error-term" class="nav-link" data-scroll-target="#ex-2.4-estimate-variance-of-error-term"><span class="header-section-number">2.1.3</span> Ex 2.4: Estimate variance of error term</a></li>
+  <li><a href="#ex-2.5-test-a-model" id="toc-ex-2.5-test-a-model" class="nav-link" data-scroll-target="#ex-2.5-test-a-model"><span class="header-section-number">2.1.4</span> Ex 2.5: Test a model</a></li>
+  <li><a href="#ex-2.7-test-each-coefficient" id="toc-ex-2.7-test-each-coefficient" class="nav-link" data-scroll-target="#ex-2.7-test-each-coefficient"><span class="header-section-number">2.1.5</span> Ex 2.7: Test each coefficient</a></li>
+  <li><a href="#ex-2.10-mean-prediciton" id="toc-ex-2.10-mean-prediciton" class="nav-link" data-scroll-target="#ex-2.10-mean-prediciton"><span class="header-section-number">2.1.6</span> Ex 2.10: Mean prediciton</a></li>
+  <li><a href="#ex-2.11-prediction-interval" id="toc-ex-2.11-prediction-interval" class="nav-link" data-scroll-target="#ex-2.11-prediction-interval"><span class="header-section-number">2.1.7</span> Ex 2.11 Prediction interval</a></li>
   </ul></li>
-  <li><a href="#examples-2.14-2.16" id="toc-examples-2.14-2.16" class="nav-link" data-scroll-target="#examples-2.14-2.16"><span class="header-section-number">1.2</span> Examples 2.14, 2.16</a>
+  <li><a href="#examples-2.14-2.16" id="toc-examples-2.14-2.16" class="nav-link" data-scroll-target="#examples-2.14-2.16"><span class="header-section-number">2.2</span> Examples 2.14, 2.16</a>
   <ul class="collapse">
-  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">1.2.1</span> Load data</a></li>
-  <li><a href="#ex-2.14-indicator-variable" id="toc-ex-2.14-indicator-variable" class="nav-link" data-scroll-target="#ex-2.14-indicator-variable"><span class="header-section-number">1.2.2</span> Ex 2.14: Indicator variable</a></li>
-  <li><a href="#ex-2.16-interaction" id="toc-ex-2.16-interaction" class="nav-link" data-scroll-target="#ex-2.16-interaction"><span class="header-section-number">1.2.3</span> Ex 2.16: Interaction</a></li>
+  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">2.2.1</span> Load data</a></li>
+  <li><a href="#ex-2.14-indicator-variable" id="toc-ex-2.14-indicator-variable" class="nav-link" data-scroll-target="#ex-2.14-indicator-variable"><span class="header-section-number">2.2.2</span> Ex 2.14: Indicator variable</a></li>
+  <li><a href="#ex-2.16-interaction" id="toc-ex-2.16-interaction" class="nav-link" data-scroll-target="#ex-2.16-interaction"><span class="header-section-number">2.2.3</span> Ex 2.16: Interaction</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -185,7 +185,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Regression</span></h1>
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Regression</span></h1>
 </div>
 
 
@@ -232,7 +232,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -243,13 +243,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
+• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
 </div>
 </div>
-<section id="examples-2.3---2.5-2.7-2.10---2.11" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="examples-2.3---2.5-2.7-2.10---2.11"><span class="header-section-number">1.1</span> Examples 2.3 - 2.5, 2.7, 2.10 - 2.11</h2>
-<section id="load-data" class="level3" data-number="1.1.1">
-<h3 data-number="1.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">1.1.1</span> Load data</h3>
+<section id="examples-2.3---2.5-2.7-2.10---2.11" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="examples-2.3---2.5-2.7-2.10---2.11"><span class="header-section-number">2.1</span> Examples 2.3 - 2.5, 2.7, 2.10 - 2.11</h2>
+<section id="load-data" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">2.1.1</span> Load data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch2_reg1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -279,8 +279,8 @@ dbl (4): ID, age, height, weight
 </div>
 </div>
 </section>
-<section id="ex-2.3-estimate-coefficients" class="level3" data-number="1.1.2">
-<h3 data-number="1.1.2" class="anchored" data-anchor-id="ex-2.3-estimate-coefficients"><span class="header-section-number">1.1.2</span> Ex 2.3: Estimate coefficients</h3>
+<section id="ex-2.3-estimate-coefficients" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="ex-2.3-estimate-coefficients"><span class="header-section-number">2.1.2</span> Ex 2.3: Estimate coefficients</h3>
 <p>Use <code>{parsnip}</code> package, a part of <code>{tidymodels}</code>, that provide a unified modeling interface.</p>
 <p>Define a model type and engine.</p>
 <div class="cell">
@@ -322,8 +322,8 @@ Coefficients:
 </div>
 </div>
 </section>
-<section id="ex-2.4-estimate-variance-of-error-term" class="level3" data-number="1.1.3">
-<h3 data-number="1.1.3" class="anchored" data-anchor-id="ex-2.4-estimate-variance-of-error-term"><span class="header-section-number">1.1.3</span> Ex 2.4: Estimate variance of error term</h3>
+<section id="ex-2.4-estimate-variance-of-error-term" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="ex-2.4-estimate-variance-of-error-term"><span class="header-section-number">2.1.3</span> Ex 2.4: Estimate variance of error term</h3>
 <p><code>broom::glance()</code> provides model-level statistics.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">glance</span>(model_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -343,8 +343,8 @@ Coefficients:
 </div>
 </div>
 </section>
-<section id="ex-2.5-test-a-model" class="level3" data-number="1.1.4">
-<h3 data-number="1.1.4" class="anchored" data-anchor-id="ex-2.5-test-a-model"><span class="header-section-number">1.1.4</span> Ex 2.5: Test a model</h3>
+<section id="ex-2.5-test-a-model" class="level3" data-number="2.1.4">
+<h3 data-number="2.1.4" class="anchored" data-anchor-id="ex-2.5-test-a-model"><span class="header-section-number">2.1.4</span> Ex 2.5: Test a model</h3>
 <p>Call <code>extract_fit_engine()</code> when you need to explicitly use underlying <code>lm</code> object.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_fit_engine</span>(model_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -376,8 +376,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="ex-2.7-test-each-coefficient" class="level3" data-number="1.1.5">
-<h3 data-number="1.1.5" class="anchored" data-anchor-id="ex-2.7-test-each-coefficient"><span class="header-section-number">1.1.5</span> Ex 2.7: Test each coefficient</h3>
+<section id="ex-2.7-test-each-coefficient" class="level3" data-number="2.1.5">
+<h3 data-number="2.1.5" class="anchored" data-anchor-id="ex-2.7-test-each-coefficient"><span class="header-section-number">2.1.5</span> Ex 2.7: Test each coefficient</h3>
 <p>As seen above, <code>tidy()</code> function returns data frame that contain test statistics.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -391,8 +391,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="ex-2.10-mean-prediciton" class="level3" data-number="1.1.6">
-<h3 data-number="1.1.6" class="anchored" data-anchor-id="ex-2.10-mean-prediciton"><span class="header-section-number">1.1.6</span> Ex 2.10: Mean prediciton</h3>
+<section id="ex-2.10-mean-prediciton" class="level3" data-number="2.1.6">
+<h3 data-number="2.1.6" class="anchored" data-anchor-id="ex-2.10-mean-prediciton"><span class="header-section-number">2.1.6</span> Ex 2.10: Mean prediciton</h3>
 <p>Let’s create a new data set as a tidyverse data frame <code>tibble</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>newdata <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">age =</span> <span class="dv">40</span>, <span class="at">height =</span> <span class="dv">170</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
@@ -421,8 +421,8 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 </section>
-<section id="ex-2.11-prediction-interval" class="level3" data-number="1.1.7">
-<h3 data-number="1.1.7" class="anchored" data-anchor-id="ex-2.11-prediction-interval"><span class="header-section-number">1.1.7</span> Ex 2.11 Prediction interval</h3>
+<section id="ex-2.11-prediction-interval" class="level3" data-number="2.1.7">
+<h3 data-number="2.1.7" class="anchored" data-anchor-id="ex-2.11-prediction-interval"><span class="header-section-number">2.1.7</span> Ex 2.11 Prediction interval</h3>
 <p>Instead of confidence interval, you can add prediction interval by passing argument <code>type = "pred_int"</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>newdata <span class="sc">|&gt;</span> </span>
@@ -437,10 +437,10 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </section>
 </section>
-<section id="examples-2.14-2.16" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="examples-2.14-2.16"><span class="header-section-number">1.2</span> Examples 2.14, 2.16</h2>
-<section id="load-data-1" class="level3" data-number="1.2.1">
-<h3 data-number="1.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">1.2.1</span> Load data</h3>
+<section id="examples-2.14-2.16" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="examples-2.14-2.16"><span class="header-section-number">2.2</span> Examples 2.14, 2.16</h2>
+<section id="load-data-1" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">2.2.1</span> Load data</h3>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch2_coil.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
@@ -454,10 +454,10 @@ dbl (3): temp, thick, y
 </div>
 </div>
 </section>
-<section id="ex-2.14-indicator-variable" class="level3" data-number="1.2.2">
-<h3 data-number="1.2.2" class="anchored" data-anchor-id="ex-2.14-indicator-variable"><span class="header-section-number">1.2.2</span> Ex 2.14: Indicator variable</h3>
-<section id="set-indicator-variable" class="level4" data-number="1.2.2.1">
-<h4 data-number="1.2.2.1" class="anchored" data-anchor-id="set-indicator-variable"><span class="header-section-number">1.2.2.1</span> Set indicator variable</h4>
+<section id="ex-2.14-indicator-variable" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="ex-2.14-indicator-variable"><span class="header-section-number">2.2.2</span> Ex 2.14: Indicator variable</h3>
+<section id="set-indicator-variable" class="level4" data-number="2.2.2.1">
+<h4 data-number="2.2.2.1" class="anchored" data-anchor-id="set-indicator-variable"><span class="header-section-number">2.2.2.1</span> Set indicator variable</h4>
 <p>Define feature engineering steps with <code>{recipes}</code> package, a part of <code>{tidymodels}</code>.</p>
 <p>First, call <code>recipe()</code> to define input variables, output variable, and data.</p>
 <div class="cell">
@@ -558,8 +558,8 @@ predictor: 2</code></pre>
 </div>
 </div>
 </section>
-<section id="include-feature-engineering-into-a-workflow" class="level4" data-number="1.2.2.2">
-<h4 data-number="1.2.2.2" class="anchored" data-anchor-id="include-feature-engineering-into-a-workflow"><span class="header-section-number">1.2.2.2</span> Include feature engineering into a workflow</h4>
+<section id="include-feature-engineering-into-a-workflow" class="level4" data-number="2.2.2.2">
+<h4 data-number="2.2.2.2" class="anchored" data-anchor-id="include-feature-engineering-into-a-workflow"><span class="header-section-number">2.2.2.2</span> Include feature engineering into a workflow</h4>
 <p>Let’s start with defining model type and engine as we did in the first example above.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>model <span class="ot">&lt;-</span> </span>
@@ -637,11 +637,11 @@ Coefficients:
 </div>
 </section>
 </section>
-<section id="ex-2.16-interaction" class="level3" data-number="1.2.3">
-<h3 data-number="1.2.3" class="anchored" data-anchor-id="ex-2.16-interaction"><span class="header-section-number">1.2.3</span> Ex 2.16: Interaction</h3>
+<section id="ex-2.16-interaction" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="ex-2.16-interaction"><span class="header-section-number">2.2.3</span> Ex 2.16: Interaction</h3>
 <p>You can revise the workflow by updating recipe to include interaction term.</p>
-<section id="update-recipe" class="level4" data-number="1.2.3.1">
-<h4 data-number="1.2.3.1" class="anchored" data-anchor-id="update-recipe"><span class="header-section-number">1.2.3.1</span> Update recipe</h4>
+<section id="update-recipe" class="level4" data-number="2.2.3.1">
+<h4 data-number="2.2.3.1" class="anchored" data-anchor-id="update-recipe"><span class="header-section-number">2.2.3.1</span> Update recipe</h4>
 <p>Add <code>step_interact()</code> to existing recipe to add interaction term. Because a dummy variable will be used in this step, use <code>starts_with("thick")</code> to capture dummy variable names, instead of using original variable name.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>rec_interaction <span class="ot">&lt;-</span></span>
@@ -707,8 +707,8 @@ predictor: 2</code></pre>
 </div>
 </div>
 </section>
-<section id="update-workflow" class="level4" data-number="1.2.3.2">
-<h4 data-number="1.2.3.2" class="anchored" data-anchor-id="update-workflow"><span class="header-section-number">1.2.3.2</span> Update workflow</h4>
+<section id="update-workflow" class="level4" data-number="2.2.3.2">
+<h4 data-number="2.2.3.2" class="anchored" data-anchor-id="update-workflow"><span class="header-section-number">2.2.3.2</span> Update workflow</h4>
 <p>Update workflow by calling <code>update_recipe()</code>.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a>wflow_interaction <span class="ot">&lt;-</span> </span>
@@ -736,8 +736,8 @@ Computational engine: lm </code></pre>
 </div>
 </div>
 </section>
-<section id="estimate-a-model-with-the-new-workflow" class="level4" data-number="1.2.3.3">
-<h4 data-number="1.2.3.3" class="anchored" data-anchor-id="estimate-a-model-with-the-new-workflow"><span class="header-section-number">1.2.3.3</span> Estimate a model with the new workflow</h4>
+<section id="estimate-a-model-with-the-new-workflow" class="level4" data-number="2.2.3.3">
+<h4 data-number="2.2.3.3" class="anchored" data-anchor-id="estimate-a-model-with-the-new-workflow"><span class="header-section-number">2.2.3.3</span> Estimate a model with the new workflow</h4>
 <p>Call <code>fit()</code> function with the new workflow.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>lm_model_interaction <span class="ot">&lt;-</span> </span>
@@ -1176,7 +1176,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
       <a href="./index.html" class="pagination-link" aria-label="Preface">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Preface</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
