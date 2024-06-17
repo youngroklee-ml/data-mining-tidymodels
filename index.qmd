@@ -10,3 +10,15 @@ The tidymodels framework is a collection of packages to provide intuitive and un
 - tidymodels website: [https://www.tidymodels.org](https://www.tidymodels.org)
 - "Tidy modeling with R" by Max Kuhn and Julia Silge: [https://www.tmwr.org](https://www.tmwr.org)
 
+
+## Model engine packages
+
+Each modeling packages need to be separately installed to use it within the tidymodels framework. Example codes in this book require the following R packages.
+
+```{r}
+#| output: false
+#| warning: false
+#| message: false
+library(glmnet)
+```
+

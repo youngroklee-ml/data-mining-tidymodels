@@ -1,0 +1,186 @@
+# Regularized regression
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+
+## Examples 3.1 - 3.2
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch3_dat1.csv")
+```
+
+Number of objects
+
+```{r}
+N <- nrow(dat1)
+N
+```
+
+### Standardize input variables
+
+Define a recipe to standardize each input variable
+
+```{r}
+rec <- 
+  recipe(y ~ x1 + x2, data = dat1) |> 
+  step_normalize(x1, x2)
+```
+
+
+### Ex 3.1: Lasso
+
+#### Basics
+
+Regularized regression model is still defined by `linear_reg()`, but with additional arguments `penalty` and `mixture`, where `penalty` is for the amount of regularization, while `mixture` is for proportion of L1 regularization. Set `mixture = 1` to be Lasso. And let us set `penalty = 0` to check a regression coefficient without regularization.
+
+Default engine `"lm"` does not support regularized regression, so you should set a specific engine that support regularized regression. Let us use `"glmnet"` here.
+
+```{r}
+lasso_model <- 
+  linear_reg(penalty = 0, mixture = 1) |> 
+  set_engine("glmnet")
+```
+
+This is translated into `{glmnet}` syntax like below:
+
+```{r}
+lasso_model |> 
+  translate()
+```
+
+Define a workflow for Lasso regression.
+
+```{r}
+lasso_wflow <- 
+  workflow() |> 
+  add_recipe(rec) |> 
+  add_model(lasso_model)
+```
+
+Then estimate the model.
+
+```{r}
+model_fit <- 
+  lasso_wflow |> 
+  fit(data = dat1)
+```
+
+```{r}
+tidy(model_fit)
+```
+
+
+#### Set regularization path
+
+Previous result is slightly different from a result of typical linear regression.
+
+```{r}
+workflow() |> 
+  add_recipe(rec) |> 
+  add_model(linear_reg()) |> 
+  fit(data = dat1) |> 
+  tidy()
+```
+
+A region is that `{glmnet}` consumes additional parameter `lambda` to set a series of values called "regularization path", and the model approximates between the closet path values. So, if you want to obtain more correct coefficient or prediction associated with a particular penalty amount, include the value to regularization path with glmnet-specific optional parameter `path_values` in `set_engine()`. See [Technical aspects of the glmnet model](https://parsnip.tidymodels.org/reference/glmnet-details.html)
+
+```{r}
+regularization_path <- c(3:0) / (2 * N - 1)
+
+lasso_model <- 
+  linear_reg(penalty = 0, mixture = 1) |> 
+  set_engine("glmnet", path_values = regularization_path)
+```
+
+```{r}
+lasso_model |> 
+  translate()
+```
+
+Define a workflow for Lasso regression.
+
+```{r}
+lasso_wflow <- 
+  workflow() |> 
+  add_recipe(rec) |> 
+  add_model(lasso_model)
+
+model_fit <- 
+  lasso_wflow |> 
+  fit(data = dat1)
+```
+
+```{r}
+tidy(model_fit)
+```
+
+To obtain coefficients for all four penalty amounts of interest in the regularization path, we can extract the glmnet object and apply specific function.
+
+```{r}
+model_fit |> 
+  extract_fit_parsnip() |> 
+  extract_fit_engine() |> 
+  predict(type = "coefficients") |> 
+  round(4)
+```
+
+
+### Ex 3.2: Ridge
+
+Ridge is very similar to Lasso, except setting `mixture = 0`. Let us define the workflow for ridge regression.
+
+```{r}
+regularization_path <- c(3:0) / (N - 1) * 2
+
+ridge_model <- 
+  linear_reg(penalty = 0, mixture = 0) |> 
+  set_engine("glmnet", path_values = regularization_path)
+
+ridge_wflow <- 
+  workflow() |> 
+  add_recipe(rec) |> 
+  add_model(ridge_model)
+```
+
+
+```{r}
+model_fit <- 
+  ridge_wflow |> 
+  fit(data = dat1)
+
+model_fit |> 
+  extract_fit_parsnip() |> 
+  extract_fit_engine() |> 
+  predict(type = "coefficients") |> 
+  round(4)
+```
+
+
+Even though obtaining coefficients is somewhat tedious because it requires extraction of underlying model objects, making a prediction from all the penalty amounts of interest is a little bit more convenient by using `multi_predict()` function. However, data preprocessing for new data needs to be separately done. 
+
+```{r}
+ridge_pred <- 
+  model_fit |> 
+  extract_fit_parsnip() |> 
+  multi_predict(
+    new_data = bake(prep(rec, dat1), dat1)[c('x1', 'x2')], 
+    penalty = regularization_path
+  )
+```
+
+Let us see prediction results.
+
+```{r}
+dat1 |> 
+  bind_cols(ridge_pred) |> 
+  unnest(.pred)
+```
+
+
+
