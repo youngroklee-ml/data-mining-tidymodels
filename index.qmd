@@ -20,5 +20,6 @@ Each modeling packages need to be separately installed to use it within the tidy
 #| warning: false
 #| message: false
 library(glmnet)
+library(mixOmics)
 ```
 
