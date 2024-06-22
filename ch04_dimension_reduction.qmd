@@ -1,0 +1,197 @@
+# Dimension reduction
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+## Examples 4.10
+
+### Load data
+
+```{r}
+dat2 <- read_csv("data/ch4_dat2.csv", locale = locale(encoding = "euc-kr"))
+dat2
+```
+
+### Principal component analysis
+
+Define recipe for principal component analysis. Use all variables except `ID`, and standardize each variable before conducting PCA.
+
+```{r}
+rec_pca <- 
+  recipe(~ ., data = dat2) |> 
+  step_rm(ID) |> 
+  step_normalize(everything()) |> 
+  step_pca(everything())
+```
+
+Applying `tidy()` on a recipe object returns a data frame that each row represents each step.
+
+```{r}
+tidy(rec_pca)
+```
+
+
+Let us estimate PCA model.
+
+```{r}
+pca_estimates <- prep(rec_pca)
+```
+
+Applying `tidy()` on estimated recipe also returns a data frame that each row represents each step. Please see that values in column `trained` is `TRUE` when passing the estimated recipe, i.e. output of `prep()`.
+
+```{r}
+tidy(pca_estimates)
+```
+
+In this example, PCA is the 3rd step. By passing argument `number = 3` when calling `tidy()`, you can extract loadings.
+
+```{r}
+tidy(pca_estimates, number = 3)
+```
+
+Let's see entire loading matrix for this example.
+
+```{r}
+tidy(pca_estimates, number = 3) |> 
+  pivot_wider(names_from = component, values_from = value)
+```
+
+By additionally passing `type = "variance"` argument, you can see eigenvalues from the rows associated with `terms == "variance"`, and derived statistics.
+
+```{r}
+tidy(pca_estimates, number = 3, type = "variance")
+```
+
+
+## Examples 4.12
+
+### Load data
+
+```{r}
+dat3 <- read_csv("data/ch4_dat3.csv")
+dat3
+```
+
+### Principal component regression
+
+To use principal component scores as input variables of a regression model, it is recommended to use workflow.
+
+First, let us define a recipe of data preprocessing including PCA. Let us create only two principal components, by passing argument `num_comp = 2`.
+
+```{r}
+rec_pca <- 
+  recipe(y ~ ., data = dat3) |> 
+  step_center(all_predictors()) |> 
+  step_pca(all_predictors(), num_comp = 2)
+```
+
+Let us define a model. We will use just a default linear regression.
+
+```{r}
+lm_model <- linear_reg()
+```
+
+
+Then let us define a workflow.
+
+```{r}
+pcr_wflow <-
+  workflow() |> 
+  add_recipe(rec_pca) |> 
+  add_model(lm_model)
+```
+
+
+Finally, we will train the workflow on training data.
+
+```{r}
+pcr_fit <- fit(pcr_wflow, data = dat3)
+```
+
+See the estimated coefficients on principal components.
+
+```{r}
+tidy(pcr_fit)
+```
+
+
+## Examples 4.14 - 4.15
+
+### Load data
+
+```{r}
+dat3 <- read_csv("data/ch4_dat3.csv")
+dat3
+```
+
+### Partial least squares regression
+
+Estimating partial least squares(PLS) model within tidymodels framework requires some additional settings. First, you need to install `{mixOmics}` package to use it as an engine. `{mixOmics}` exists not on CRAN but on [Bioconductor](https://bioconductor.org/packages/release/bioc/html/mixOmics.html) repository, so you should follow the installation guidance. Then, using `parsnip::pls()` requires installing and loading an extension package `{plsmod}`. Please see [an example](https://parsnip.tidymodels.org/reference/details_pls_mixOmics.html).
+
+Now, let us define a PLS model. Pass `scale = FALSE` in `set_engine()` when you want to use original scale for predictor variables instead of standardizing them.
+
+```{r}
+library(plsmod)
+
+pls_model <- 
+  pls(num_comp = 2) |> 
+  set_engine("mixOmics", scale = FALSE) |> 
+  set_mode("regression")
+```
+
+Let's estimate the PLS model.
+
+```{r}
+pls_fit <- 
+  pls_model |> 
+  fit(y ~ ., data = dat3)
+```
+
+
+### Ex 4.14
+
+See latent matrix (T)
+
+```{r}
+pls_fit |> 
+  extract_fit_engine() |> 
+  pluck("variates", "X")
+```
+
+
+X-loading matrix (P)
+
+```{r}
+pls_fit |> 
+  extract_fit_engine() |> 
+  pluck("mat.c")
+```
+
+Loading weight matrix (W): 
+
+```{r}
+pls_fit |> 
+  extract_fit_engine() |> 
+  pluck("loadings", "X")
+```
+
+or, simply
+
+```{r}
+tidy(pls_fit)
+```
+
+Please note that loadings for y are different from the book example.
+
+Weight matrix related to original predictors are
+
+```{r}
+pls_fit |> 
+  extract_fit_engine() |> 
+  pluck("loadings.star", 1)
+```
+
+

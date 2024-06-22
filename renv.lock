@@ -1641,6 +1641,25 @@
       ],
       "Hash": "01f28d4278f15c76cddbea05899c5d6f"
     },
+    "plsmod": {
+      "Package": "plsmod",
+      "Version": "1.0.0",
+      "Source": "Bioconductor",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "dplyr",
+        "generics",
+        "magrittr",
+        "mixOmics",
+        "parsnip",
+        "purrr",
+        "rlang",
+        "tibble",
+        "tidyr"
+      ],
+      "Hash": "1ed0652356d6c5de752d09c92e0debec"
+    },
     "plyr": {
       "Package": "plyr",
       "Version": "1.8.9",
