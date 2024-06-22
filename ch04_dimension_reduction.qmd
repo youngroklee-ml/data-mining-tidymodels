@@ -75,7 +75,7 @@ dat3 <- read_csv("data/ch4_dat3.csv")
 dat3
 ```
 
-### Principal component regression
+### Principal component regression (PCR)
 
 To use principal component scores as input variables of a regression model, it is recommended to use workflow.
 
@@ -117,6 +117,18 @@ See the estimated coefficients on principal components.
 tidy(pcr_fit)
 ```
 
+### Prediction
+
+Let us predict response variable value by using the estimated PCR model by calling `predict()` function.
+
+```{r}
+dat3 |> 
+  bind_cols(predict(pcr_fit, new_data = dat3))
+```
+
+
+
+
 
 ## Examples 4.14 - 4.15
 
@@ -151,9 +163,11 @@ pls_fit <-
 ```
 
 
-### Ex 4.14
+### Estimated model
 
-See latent matrix (T)
+Extracting each estimated matrix from PLS model mostly requires direct access to model engine object by `extract_fit_engine()`; not much convinient interface through tidymodels framework.
+
+See latent matrix (T):
 
 ```{r}
 pls_fit |> 
@@ -162,7 +176,7 @@ pls_fit |>
 ```
 
 
-X-loading matrix (P)
+X-loading matrix (P):
 
 ```{r}
 pls_fit |> 
@@ -192,6 +206,16 @@ Weight matrix related to original predictors are
 pls_fit |> 
   extract_fit_engine() |> 
   pluck("loadings.star", 1)
+```
+
+
+### Prediction
+
+Predicting expected response variable value is easy within tidymodels framework, by calling `predict()` function.
+
+```{r}
+dat3 |> 
+  bind_cols(predict(pls_fit, new_data = dat3))
 ```
 
 
