@@ -25,8 +25,8 @@ jobs:
           r-version: '4.4.0'
           use-public-rspm: true
           
-      # - name: Install R package dependencies
-      #   run: sudo apt-get install -y libglpk40
+      - name: Install R package dependencies
+        run: sudo apt-get install -y libglpk40
 
       - name: Setup renv and install packages
         uses: r-lib/actions/setup-renv@v2
