@@ -24,7 +24,7 @@
     "href": "index.html#model-engine-packages",
     "title": "Data mining with {tidymodels}",
     "section": "1.2 Model engine packages",
-    "text": "1.2 Model engine packages\nEach modeling packages need to be separately installed to use it within the tidymodels framework. Example codes in this book require the following R packages.\n\nlibrary(glmnet)",
+    "text": "1.2 Model engine packages\nEach modeling packages need to be separately installed to use it within the tidymodels framework. Example codes in this book require the following R packages.\n\nlibrary(glmnet)\nlibrary(mixOmics)",
     "crumbs": [
       "<span class='chapter-number'>1</span>  <span class='chapter-title'>Preface</span>"
     ]
