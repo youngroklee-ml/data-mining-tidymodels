@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data mining with {tidymodels} - 3&nbsp; Regularized regression</title>
+<title>Data mining with {tidymodels} - 5&nbsp; Classification</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ch04_dimension_reduction.html" rel="next">
-<link href="./ch02_regression.html" rel="prev">
+<link href="./ch04_dimension_reduction.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -115,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch03_regularized_regression.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Regularized regression</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch05_classification.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Classification</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -154,7 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ch03_regularized_regression.html" class="sidebar-item-text sidebar-link active">
+  <a href="./ch03_regularized_regression.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Regularized regression</span></span></a>
   </div>
 </li>
@@ -166,7 +165,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ch05_classification.html" class="sidebar-item-text sidebar-link">
+  <a href="./ch05_classification.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Classification</span></span></a>
   </div>
 </li>
@@ -180,12 +179,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#examples-3.1---3.2" id="toc-examples-3.1---3.2" class="nav-link active" data-scroll-target="#examples-3.1---3.2"><span class="header-section-number">3.1</span> Examples 3.1 - 3.2</a>
+  <li><a href="#example-5.2" id="toc-example-5.2" class="nav-link active" data-scroll-target="#example-5.2"><span class="header-section-number">5.1</span> Example 5.2</a>
   <ul class="collapse">
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">3.1.1</span> Load data</a></li>
-  <li><a href="#standardize-input-variables" id="toc-standardize-input-variables" class="nav-link" data-scroll-target="#standardize-input-variables"><span class="header-section-number">3.1.2</span> Standardize input variables</a></li>
-  <li><a href="#ex-3.1-lasso" id="toc-ex-3.1-lasso" class="nav-link" data-scroll-target="#ex-3.1-lasso"><span class="header-section-number">3.1.3</span> Ex 3.1: Lasso</a></li>
-  <li><a href="#ex-3.2-ridge" id="toc-ex-3.2-ridge" class="nav-link" data-scroll-target="#ex-3.2-ridge"><span class="header-section-number">3.1.4</span> Ex 3.2: Ridge</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">5.1.1</span> Load data</a></li>
+  <li><a href="#split-data" id="toc-split-data" class="nav-link" data-scroll-target="#split-data"><span class="header-section-number">5.1.2</span> Split data</a></li>
+  <li><a href="#nn-model-estimation" id="toc-nn-model-estimation" class="nav-link" data-scroll-target="#nn-model-estimation"><span class="header-section-number">5.1.3</span> 3-NN model estimation</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">5.1.4</span> Prediction</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -195,7 +194,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Regularized regression</span></h1>
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Classification</span></h1>
 </div>
 
 
@@ -242,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -253,254 +252,104 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 </div>
-<section id="examples-3.1---3.2" class="level2" data-number="3.1">
-<h2 data-number="3.1" class="anchored" data-anchor-id="examples-3.1---3.2"><span class="header-section-number">3.1</span> Examples 3.1 - 3.2</h2>
-<section id="load-data" class="level3" data-number="3.1.1">
-<h3 data-number="3.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">3.1.1</span> Load data</h3>
+<section id="example-5.2" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="example-5.2"><span class="header-section-number">5.1</span> Example 5.2</h2>
+<section id="load-data" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">5.1.1</span> Load data</h3>
+<p>To estimate classification models, you first need to convert outcome variable to be a factor, if it is a numeric in original data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch3_dat1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch7_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 7 Columns: 3
+<pre><code>Rows: 9 Columns: 4
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-dbl (3): x1, x2, y
+dbl (4): ID, X1, X2, class
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
-<p>Number of objects</p>
+</section>
+<section id="split-data" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="split-data"><span class="header-section-number">5.1.2</span> Split data</h3>
+<p>Let us divide data into two fold: training and testing data. Within tidymodels framework, <code>{rsamples}</code> package, a part of <code>{tidymodels}</code> provides functions to split data.</p>
+<p><code>initial_split()</code> randomly split data into training and testing data, while <code>initial_time_split()</code> take first rows of data as training and last rows of data as testing data. To be consistent with a book example, let us use <code>initial_time_split()</code> here.</p>
+<p>In this example, let us use 8 data points as training data, and just one data point as testing data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">nrow</span>(dat1)</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>N</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 7</code></pre>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat1_split <span class="ot">&lt;-</span> <span class="fu">initial_time_split</span>(dat1, <span class="at">prop =</span> <span class="dv">8</span> <span class="sc">/</span> <span class="dv">9</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>dat_train <span class="ot">&lt;-</span> <span class="fu">training</span>(dat1_split)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>dat_test <span class="ot">&lt;-</span> <span class="fu">testing</span>(dat1_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A book examples used 7 data points as training data, but we are using 8 here due to a parameter setting mechanism in tidymodels framework. Within tidymodels framework, 8 data points are the minimum number of data points to use 3 neighborhoods. If you use 7 data points as training data, tidymodels will automatically reset the number of neighbors to be 2. For more details, please see <a href="https://parsnip.tidymodels.org/reference/details_nearest_neighbor_kknn.html">https://parsnip.tidymodels.org/reference/details_nearest_neighbor_kknn.html</a>.</p>
 </div>
 </div>
 </section>
-<section id="standardize-input-variables" class="level3" data-number="3.1.2">
-<h3 data-number="3.1.2" class="anchored" data-anchor-id="standardize-input-variables"><span class="header-section-number">3.1.2</span> Standardize input variables</h3>
-<p>Define a recipe to standardize each input variable</p>
+<section id="nn-model-estimation" class="level3" data-number="5.1.3">
+<h3 data-number="5.1.3" class="anchored" data-anchor-id="nn-model-estimation"><span class="header-section-number">5.1.3</span> 3-NN model estimation</h3>
+<p>Tidymodels framework uses <code>{kknn}</code> as an engine of k-nearest-neighbor models for both classification and regression. After installing <code>{kknn}</code> package, call <code>nearest_neighbor()</code> with <code>neighbors</code> argument to specify number of neighbors to use in estimation. You must specify mode of the model to be either <code>"classification"</code> or <code>"regression"</code>. In this example, use <code>"classification"</code> mode.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>rec <span class="ot">&lt;-</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> dat1) <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_normalize</span>(x1, x2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>knn_model <span class="ot">&lt;-</span> </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nearest_neighbor</span>(<span class="at">neighbors =</span> <span class="dv">3</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"kknn"</span>, <span class="at">scale =</span> <span class="cn">FALSE</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</section>
-<section id="ex-3.1-lasso" class="level3" data-number="3.1.3">
-<h3 data-number="3.1.3" class="anchored" data-anchor-id="ex-3.1-lasso"><span class="header-section-number">3.1.3</span> Ex 3.1: Lasso</h3>
-<section id="basics" class="level4" data-number="3.1.3.1">
-<h4 data-number="3.1.3.1" class="anchored" data-anchor-id="basics"><span class="header-section-number">3.1.3.1</span> Basics</h4>
-<p>Regularized regression model is still defined by <code>linear_reg()</code>, but with additional arguments <code>penalty</code> and <code>mixture</code>, where <code>penalty</code> is for the amount of regularization, while <code>mixture</code> is for proportion of L1 regularization. Set <code>mixture = 1</code> to be Lasso. And let us set <code>penalty = 0</code> to check a regression coefficient without regularization.</p>
-<p>Default engine <code>"lm"</code> does not support regularized regression, so you should set a specific engine that support regularized regression. Let us use <code>"glmnet"</code> here.</p>
+<p>Then, estimate the model with <code>fit()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="ot">&lt;-</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="dv">0</span>, <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>knn_fit <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  knn_model <span class="sc">|&gt;</span> </span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> dat_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>This is translated into <code>{glmnet}</code> syntax like below:</p>
+<p>Let us check estimated results on training data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="sc">|&gt;</span> </span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>dat_train <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    knn_fit <span class="sc">|&gt;</span> </span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pluck</span>(<span class="st">"fitted.values"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">set_names</span>(<span class="st">"estimated_class"</span>)</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Linear Regression Model Specification (regression)
-
-Main Arguments:
-  penalty = 0
-  mixture = 1
-
-Computational engine: glmnet 
-
-Model fit template:
-glmnet::glmnet(x = missing_arg(), y = missing_arg(), weights = missing_arg(), 
-    alpha = 1, family = "gaussian")</code></pre>
-</div>
-</div>
-<p>Define a workflow for Lasso regression.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>lasso_wflow <span class="ot">&lt;-</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rec) <span class="sc">|&gt;</span> </span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lasso_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Then estimate the model.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>model_fit <span class="ot">&lt;-</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  lasso_wflow <span class="sc">|&gt;</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'Matrix'</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following objects are masked from 'package:tidyr':
-
-    expand, pack, unpack</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Loaded glmnet 4.1-8</code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  term        estimate penalty
-  &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept) 6.28e-17       0
-2 x1          2.01e+ 0       0
-3 x2          1.26e- 1       0</code></pre>
+<pre><code># A tibble: 8 × 5
+     ID    X1    X2 class estimated_class
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;          
+1     1     5     7 1     1              
+2     2     4     3 2     1              
+3     3     7     8 2     1              
+4     4     8     6 2     2              
+5     5     3     6 1     1              
+6     6     2     5 1     1              
+7     7     6     6 1     1              
+8     8     9     6 2     2              </code></pre>
 </div>
 </div>
 </section>
-<section id="set-regularization-path" class="level4" data-number="3.1.3.2">
-<h4 data-number="3.1.3.2" class="anchored" data-anchor-id="set-regularization-path"><span class="header-section-number">3.1.3.2</span> Set regularization path</h4>
-<p>Previous result is slightly different from a result of typical linear regression.</p>
+<section id="prediction" class="level3" data-number="5.1.4">
+<h3 data-number="5.1.4" class="anchored" data-anchor-id="prediction"><span class="header-section-number">5.1.4</span> Prediction</h3>
+<p>Let us make a prediction on testing data, by calling <code>predict()</code> function.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rec) <span class="sc">|&gt;</span> </span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(<span class="fu">linear_reg</span>()) <span class="sc">|&gt;</span> </span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> dat1) <span class="sc">|&gt;</span> </span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tidy</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>dat_test <span class="sc">|&gt;</span> </span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(knn_fit, <span class="at">new_data =</span> dat_test)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 5
-  term        estimate std.error statistic p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept) 3.37e-18     0.172  1.96e-17 1      
-2 x1          2.02e+ 0     0.306  6.60e+ 0 0.00272
-3 x2          1.34e- 1     0.306  4.38e- 1 0.684  </code></pre>
-</div>
-</div>
-<p>A region is that <code>{glmnet}</code> consumes additional parameter <code>lambda</code> to set a series of values called “regularization path”, and the model approximates between the closet path values. So, if you want to obtain more correct coefficient or prediction associated with a particular penalty amount, include the value to regularization path with glmnet-specific optional parameter <code>path_values</code> in <code>set_engine()</code>. See <a href="https://parsnip.tidymodels.org/reference/glmnet-details.html">Technical aspects of the glmnet model</a></p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>regularization_path <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">0</span>) <span class="sc">/</span> (<span class="dv">2</span> <span class="sc">*</span> N <span class="sc">-</span> <span class="dv">1</span>)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="ot">&lt;-</span> </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="dv">0</span>, <span class="at">mixture =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>, <span class="at">path_values =</span> regularization_path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>lasso_model <span class="sc">|&gt;</span> </span>
-<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Linear Regression Model Specification (regression)
-
-Main Arguments:
-  penalty = 0
-  mixture = 1
-
-Computational engine: glmnet 
-
-Model fit template:
-glmnet::glmnet(x = missing_arg(), y = missing_arg(), weights = missing_arg(), 
-    lambda = regularization_path, alpha = 1, family = "gaussian")</code></pre>
-</div>
-</div>
-<p>Define a workflow for Lasso regression.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>lasso_wflow <span class="ot">&lt;-</span> </span>
-<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rec) <span class="sc">|&gt;</span> </span>
-<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(lasso_model)</span>
-<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>model_fit <span class="ot">&lt;-</span> </span>
-<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  lasso_wflow <span class="sc">|&gt;</span> </span>
-<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(model_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 3 × 3
-  term        estimate penalty
-  &lt;chr&gt;          &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept) 6.35e-17       0
-2 x1          2.02e+ 0       0
-3 x2          1.33e- 1       0</code></pre>
-</div>
-</div>
-<p>To obtain coefficients for all four penalty amounts of interest in the regularization path, we can extract the glmnet object and apply specific function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>model_fit <span class="sc">|&gt;</span> </span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">type =</span> <span class="st">"coefficients"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>3 x 4 sparse Matrix of class "dgCMatrix"
-                s0     s1     s2     s3
-(Intercept) 0.0000 0.0000 0.0000 0.0000
-x1          1.8771 1.9279 1.9743 2.0207
-x2          .      0.0409 0.0872 0.1335</code></pre>
-</div>
-</div>
-</section>
-</section>
-<section id="ex-3.2-ridge" class="level3" data-number="3.1.4">
-<h3 data-number="3.1.4" class="anchored" data-anchor-id="ex-3.2-ridge"><span class="header-section-number">3.1.4</span> Ex 3.2: Ridge</h3>
-<p>Ridge is very similar to Lasso, except setting <code>mixture = 0</code>. Let us define the workflow for ridge regression.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>regularization_path <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">0</span>) <span class="sc">/</span> (N <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> <span class="dv">2</span></span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>ridge_model <span class="ot">&lt;-</span> </span>
-<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">linear_reg</span>(<span class="at">penalty =</span> <span class="dv">0</span>, <span class="at">mixture =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glmnet"</span>, <span class="at">path_values =</span> regularization_path)</span>
-<span id="cb32-6"><a href="#cb32-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb32-7"><a href="#cb32-7" aria-hidden="true" tabindex="-1"></a>ridge_wflow <span class="ot">&lt;-</span> </span>
-<span id="cb32-8"><a href="#cb32-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb32-9"><a href="#cb32-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(rec) <span class="sc">|&gt;</span> </span>
-<span id="cb32-10"><a href="#cb32-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(ridge_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>model_fit <span class="ot">&lt;-</span> </span>
-<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  ridge_wflow <span class="sc">|&gt;</span> </span>
-<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(<span class="at">data =</span> dat1)</span>
-<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>model_fit <span class="sc">|&gt;</span> </span>
-<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_engine</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">predict</span>(<span class="at">type =</span> <span class="st">"coefficients"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">round</span>(<span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>3 x 4 sparse Matrix of class "dgCMatrix"
-                s0     s1     s2     s3
-(Intercept) 0.0000 0.0000 0.0000 0.0000
-x1          1.1178 1.2687 1.5069 2.0194
-x2          0.5667 0.5477 0.4639 0.1345</code></pre>
-</div>
-</div>
-<p>Even though obtaining coefficients is somewhat tedious because it requires extraction of underlying model objects, making a prediction from all the penalty amounts of interest is a little bit more convenient by using <code>multi_predict()</code> function. However, data preprocessing for new data needs to be separately done.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>ridge_pred <span class="ot">&lt;-</span> </span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  model_fit <span class="sc">|&gt;</span> </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract_fit_parsnip</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multi_predict</span>(</span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">new_data =</span> <span class="fu">bake</span>(<span class="fu">prep</span>(rec, dat1), dat1)[<span class="fu">c</span>(<span class="st">'x1'</span>, <span class="st">'x2'</span>)], </span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">penalty =</span> regularization_path</span>
-<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Let us see prediction results.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="sc">|&gt;</span> </span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(ridge_pred) <span class="sc">|&gt;</span> </span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(.pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 28 × 5
-      x1    x2     y penalty .pred
-   &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt; &lt;dbl&gt;
- 1    -6    -3    -3   0     -2.77
- 2    -6    -3    -3   0.333 -2.36
- 3    -6    -3    -3   0.667 -2.11
- 4    -6    -3    -3   1     -1.93
- 5    -4    -1    -2   0     -1.81
- 6    -4    -1    -2   0.333 -1.45
- 7    -4    -1    -2   0.667 -1.26
- 8    -4    -1    -2   1     -1.13
- 9    -3    -2    -1   0     -1.40
-10    -3    -2    -1   0.333 -1.24
-# ℹ 18 more rows</code></pre>
+<pre><code># A tibble: 1 × 5
+     ID    X1    X2 class .pred_class
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;      
+1     9     5     4 2     2          </code></pre>
 </div>
 </div>
 
@@ -920,14 +769,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./ch02_regression.html" class="pagination-link" aria-label="Regression">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Regression</span></span>
+      <a href="./ch04_dimension_reduction.html" class="pagination-link" aria-label="Dimension reduction">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dimension reduction</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ch04_dimension_reduction.html" class="pagination-link" aria-label="Dimension reduction">
-        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Dimension reduction</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
