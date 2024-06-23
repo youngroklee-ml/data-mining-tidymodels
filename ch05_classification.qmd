@@ -15,6 +15,7 @@ To estimate classification models, you first need to convert outcome variable to
 ```{r}
 dat1 <- read_csv("data/ch7_dat1.csv") |> 
   mutate(class = as.factor(class))
+dat1
 ```
 
 ### Split data
