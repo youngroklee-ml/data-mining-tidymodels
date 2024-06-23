@@ -21,5 +21,6 @@ Each modeling packages need to be separately installed to use it within the tidy
 #| message: false
 library(glmnet)
 library(mixOmics)
+library(kknn)
 ```
 

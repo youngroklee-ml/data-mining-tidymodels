@@ -1,0 +1,83 @@
+# Classification
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+## Example 5.2
+
+### Load data
+
+To estimate classification models, you first need to convert outcome variable to be a factor, if it is a numeric in original data.
+
+```{r}
+dat1 <- read_csv("data/ch7_dat1.csv") |> 
+  mutate(class = as.factor(class))
+```
+
+### Split data
+
+Let us divide data into two fold: training and testing data. Within tidymodels framework, `{rsamples}` package, a part of `{tidymodels}` provides functions to split data.
+
+`initial_split()` randomly split data into training and testing data, while `initial_time_split()` take first rows of data as training and last rows of data as testing data. To be consistent with a book example, let us use `initial_time_split()` here.
+
+In this example, let us use 8 data points as training data, and just one data point as testing data.
+
+```{r}
+dat1_split <- initial_time_split(dat1, prop = 8 / 9)
+dat_train <- training(dat1_split)
+dat_test <- testing(dat1_split)
+```
+
+:::{.callout-note}
+A book examples used 7 data points as training data, but we are using 8 here due to a parameter setting mechanism in tidymodels framework. Within tidymodels framework, 8 data points are the minimum number of data points to use 3 neighborhoods. If you use 7 data points as training data, tidymodels will automatically reset the number of neighbors to be 2. For more details, please see [https://parsnip.tidymodels.org/reference/details_nearest_neighbor_kknn.html](https://parsnip.tidymodels.org/reference/details_nearest_neighbor_kknn.html).
+:::
+
+
+### 3-NN model estimation
+
+Tidymodels framework uses `{kknn}` as an engine of k-nearest-neighbor models for both classification and regression. After installing `{kknn}` package, call `nearest_neighbor()` with `neighbors` argument to specify number of neighbors to use in estimation. You must specify mode of the model to be either `"classification"` or `"regression"`. In this example, use `"classification"` mode.
+
+```{r}
+knn_model <- 
+  nearest_neighbor(neighbors = 3) |> 
+  set_engine("kknn", scale = FALSE) |> 
+  set_mode("classification")
+```
+
+Then, estimate the model with `fit()` function.
+
+```{r}
+knn_fit <- 
+  knn_model |> 
+  fit(class ~ X1 + X2, data = dat_train)
+```
+
+
+Let us check estimated results on training data.
+
+```{r}
+dat_train |> 
+  bind_cols(
+    knn_fit |> 
+      extract_fit_engine() |> 
+      pluck("fitted.values") |> 
+      set_names("estimated_class")
+  )
+```
+
+
+### Prediction
+
+Let us make a prediction on testing data, by calling `predict()` function.
+
+```{r}
+dat_test |> 
+  bind_cols(
+    predict(knn_fit, new_data = dat_test)
+  )
+```
+
+
