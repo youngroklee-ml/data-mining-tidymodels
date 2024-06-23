@@ -82,3 +82,192 @@ dat_test |>
 ```
 
 
+## Examples 5.3 - 5.4
+
+### Load data
+
+```{r}
+dat3 <- read_csv("data/ch5_dat3.csv")
+dat3
+```
+
+### Convert data type
+
+Define a recipe to convert categorical inputs and outputs to factor type.
+
+```{r}
+nb_rec <- 
+  recipe(class ~ gender + age_gr, data = dat3) |> 
+  step_num2factor(class, levels = c("1", "2")) |> 
+  step_num2factor(age_gr, levels = c("1", "2", "3", "4")) |> 
+  step_string2factor(gender)
+```
+
+Then, train the recipe by calling `prep()` function.
+
+```{r}
+nb_rec_fit <- prep(nb_rec)
+```
+
+Let us create training data to feed to modeling step, by calling `juice()` function.
+
+```{r}
+training_dat <- juice(nb_rec_fit)
+training_dat
+```
+
+
+### Ex 5.3: Naive bayes clssification
+
+#### Estimate a classifier
+
+Let us use `parsnip::naive_Bayes()` to define naive bayes model. By default, it uses `{klaR}` engine and requires installation and loading `{discrim}` package to fit the model. Please find more details [here](https://parsnip.tidymodels.org/reference/details_naive_Bayes_klaR.html).
+
+```{r}
+library(discrim)
+
+nb_model <- naive_Bayes(smoothness = 0) |> 
+  set_engine("klaR") # use {klaR} engine; this is default engine
+```
+
+You can check engine-level model fitting function template by calling `translate()` function.
+
+```{r}
+nb_model |> translate()
+```
+
+
+Let us train the model.
+
+```{r}
+nb_fit <- 
+  nb_model |> 
+  fit(class ~ gender + age_gr, data = training_dat)
+
+nb_fit
+```
+
+
+#### Prediction
+
+Let us predict posterior probabilities and predict class as well. Both can by done by calling `predict()` function, where you can specify `type = "prob"` for posterior probability prediction and `type = "class"` for class prediction.
+
+```{r}
+results <- training_dat |> 
+  bind_cols(
+    predict(nb_fit, new_data = training_dat, type = "prob"),
+    predict(nb_fit, new_data = training_dat, type = "class")
+  )
+
+results
+```
+
+
+#### Use `{naivebayes}` engine
+
+Instead of default engine `{klaR}`, let us use different engine from `{naivebayes}` package. The only change that you need to make is engine name argument in `set_engine()` when defining a model. It provides an identical results.
+
+```{r}
+library(discrim)
+
+nb_model <- naive_Bayes(smoothness = 0) |> 
+  set_engine("naivebayes") # use {naivebayes} engine
+
+nb_model |> translate()
+
+nb_fit <- 
+  nb_model |> 
+  fit(class ~ gender + age_gr, data = training_dat)
+
+nb_fit
+
+results <- training_dat |> 
+  bind_cols(
+    predict(nb_fit, new_data = training_dat, type = "prob"),
+    predict(nb_fit, new_data = training_dat, type = "class")
+  )
+
+results
+```
+
+
+### Ex 5.4: Performance evaluation
+
+`{yardstick}`, which is a part of `{tidymodels}` framework, provides functions to evaluate performance of classification and regression models. Here, let us take a look at several classification performance metrics.
+
+
+#### Confusion matrix
+
+Create confusion matrix by calling `conf_mat()` with classification result data frame. For other required arguments, `truth` represents a column name of actual class labels and `estimate` represents a column name of predicted class labels.
+
+```{r}
+results |> 
+  conf_mat(truth = class, estimate = .pred_class)
+```
+
+#### Accuracy
+
+Evaluate simple classification accuracy by `accuracy()`
+
+```{r}
+results |> 
+  accuracy(truth = class, estimate = .pred_class)
+```
+
+#### Sensitivity
+
+Use `sens()`. Pass `event_level` argument if needs to explicitly define "event" class label. It argument is only applicable to binary classification, and the value should be either `"first"` or `"second"`.
+
+```{r}
+results |> 
+  sens(truth = class, estimate = .pred_class, event_level = "first")
+```
+
+#### Specificity
+
+Use `spec()`.
+
+```{r}
+results |> 
+  spec(truth = class, estimate = .pred_class, event_level = "first")
+```
+
+#### F1-score
+
+Use `f_meas()`
+
+```{r}
+results |> 
+  f_meas(truth = class, estimate = .pred_class, event_level = "first")
+```
+
+#### Evaluate multiple metrics
+
+`{yardstick}` provides a convenient way to evaluate multiple metrics.
+
+First, create a set of metrics to compute by calling `metric_set()` with metric functions of interest as arguments.
+
+```{r}
+multiple_metrics <- metric_set(accuracy, sens, spec, f_meas)
+```
+
+Let's print the object.
+
+```{r}
+multiple_metrics
+```
+
+By looking at classes and a type of `multiple_metrics` object, you can see that it is a callable function.
+
+```{r}
+class(multiple_metrics)
+typeof(multiple_metrics)
+```
+
+Now, call the function to compute multiple metrics of interest.
+
+```{r}
+results |> 
+  multiple_metrics(truth = class, estimate = .pred_class)
+```
+

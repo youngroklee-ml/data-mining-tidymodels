@@ -22,5 +22,7 @@ Each modeling packages need to be separately installed to use it within the tidy
 library(glmnet)
 library(mixOmics)
 library(kknn)
+library(klaR)
+library(naivebayes)
 ```
 
