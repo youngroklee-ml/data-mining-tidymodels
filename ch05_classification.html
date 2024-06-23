@@ -186,6 +186,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#nn-model-estimation" id="toc-nn-model-estimation" class="nav-link" data-scroll-target="#nn-model-estimation"><span class="header-section-number">5.1.3</span> 3-NN model estimation</a></li>
   <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">5.1.4</span> Prediction</a></li>
   </ul></li>
+  <li><a href="#examples-5.3---5.4" id="toc-examples-5.3---5.4" class="nav-link" data-scroll-target="#examples-5.3---5.4"><span class="header-section-number">5.2</span> Examples 5.3 - 5.4</a>
+  <ul class="collapse">
+  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">5.2.1</span> Load data</a></li>
+  <li><a href="#convert-data-type" id="toc-convert-data-type" class="nav-link" data-scroll-target="#convert-data-type"><span class="header-section-number">5.2.2</span> Convert data type</a></li>
+  <li><a href="#ex-5.3-naive-bayes-clssification" id="toc-ex-5.3-naive-bayes-clssification" class="nav-link" data-scroll-target="#ex-5.3-naive-bayes-clssification"><span class="header-section-number">5.2.3</span> Ex 5.3: Naive bayes clssification</a></li>
+  <li><a href="#ex-5.4-performance-evaluation" id="toc-ex-5.4-performance-evaluation" class="nav-link" data-scroll-target="#ex-5.4-performance-evaluation"><span class="header-section-number">5.2.4</span> Ex 5.4: Performance evaluation</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -367,8 +374,414 @@ Note
 1     9     5     4 2     2          </code></pre>
 </div>
 </div>
+</section>
+</section>
+<section id="examples-5.3---5.4" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="examples-5.3---5.4"><span class="header-section-number">5.2</span> Examples 5.3 - 5.4</h2>
+<section id="load-data-1" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">5.2.1</span> Load data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>dat3 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch5_dat3.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 9 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): gender
+dbl (3): ID, age_gr, class
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat3</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 4
+     ID gender age_gr class
+  &lt;dbl&gt; &lt;chr&gt;   &lt;dbl&gt; &lt;dbl&gt;
+1     1 M           2     1
+2     2 M           2     2
+3     3 M           3     1
+4     4 M           4     1
+5     5 F           1     1
+6     6 F           2     2
+7     7 F           2     1
+8     8 F           3     2
+9     9 F           4     2</code></pre>
+</div>
+</div>
+</section>
+<section id="convert-data-type" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="convert-data-type"><span class="header-section-number">5.2.2</span> Convert data type</h3>
+<p>Define a recipe to convert categorical inputs and outputs to factor type.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>nb_rec <span class="ot">&lt;-</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">recipe</span>(class <span class="sc">~</span> gender <span class="sc">+</span> age_gr, <span class="at">data =</span> dat3) <span class="sc">|&gt;</span> </span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_num2factor</span>(class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_num2factor</span>(age_gr, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"1"</span>, <span class="st">"2"</span>, <span class="st">"3"</span>, <span class="st">"4"</span>)) <span class="sc">|&gt;</span> </span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">step_string2factor</span>(gender)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Then, train the recipe by calling <code>prep()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>nb_rec_fit <span class="ot">&lt;-</span> <span class="fu">prep</span>(nb_rec)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let us create training data to feed to modeling step, by calling <code>juice()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>training_dat <span class="ot">&lt;-</span> <span class="fu">juice</span>(nb_rec_fit)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>training_dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 3
+  gender age_gr class
+  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;
+1 M      2      1    
+2 M      2      2    
+3 M      3      1    
+4 M      4      1    
+5 F      1      1    
+6 F      2      2    
+7 F      2      1    
+8 F      3      2    
+9 F      4      2    </code></pre>
+</div>
+</div>
+</section>
+<section id="ex-5.3-naive-bayes-clssification" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="ex-5.3-naive-bayes-clssification"><span class="header-section-number">5.2.3</span> Ex 5.3: Naive bayes clssification</h3>
+<section id="estimate-a-classifier" class="level4" data-number="5.2.3.1">
+<h4 data-number="5.2.3.1" class="anchored" data-anchor-id="estimate-a-classifier"><span class="header-section-number">5.2.3.1</span> Estimate a classifier</h4>
+<p>Let us use <code>parsnip::naive_Bayes()</code> to define naive bayes model. By default, it uses <code>{klaR}</code> engine and requires installation and loading <code>{discrim}</code> package to fit the model. Please find more details <a href="https://parsnip.tidymodels.org/reference/details_naive_Bayes_klaR.html">here</a>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'discrim'</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dials':
+
+    smoothness</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>nb_model <span class="ot">&lt;-</span> <span class="fu">naive_Bayes</span>(<span class="at">smoothness =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"klaR"</span>) <span class="co"># use {klaR} engine; this is default engine</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can check engine-level model fitting function template by calling <code>translate()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>nb_model <span class="sc">|&gt;</span> <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Naive Bayes Model Specification (classification)
+
+Main Arguments:
+  smoothness = 0
+
+Computational engine: klaR 
+
+Model fit template:
+discrim::klar_bayes_wrapper(x = missing_arg(), y = missing_arg(), 
+    adjust = 0, usekernel = TRUE)</code></pre>
+</div>
+</div>
+<p>Let us train the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>nb_fit <span class="ot">&lt;-</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  nb_model <span class="sc">|&gt;</span> </span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> gender <span class="sc">+</span> age_gr, <span class="at">data =</span> training_dat)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb32-5"><a href="#cb32-5" aria-hidden="true" tabindex="-1"></a>nb_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+$apriori
+grouping
+        1         2 
+0.5555556 0.4444444 
+
+$tables
+$tables$gender
+        var
+grouping    F    M
+       1 0.40 0.60
+       2 0.75 0.25
+
+$tables$age_gr
+        var
+grouping    1    2    3    4
+       1 0.20 0.40 0.20 0.20
+       2 0.00 0.50 0.25 0.25
 
 
+$levels
+[1] "1" "2"
+
+$call
+NaiveBayes.default(x = ~maybe_data_frame(x), grouping = ~y, usekernel = ~TRUE, 
+    adjust = ~0)
+
+$x
+  gender age_gr
+1      M      2
+2      M      2
+3      M      3
+4      M      4
+5      F      1
+6      F      2
+7      F      2
+8      F      3
+9      F      4
+
+$usekernel
+[1] TRUE
+
+$varnames
+[1] "gender" "age_gr"
+
+attr(,"class")
+[1] "NaiveBayes"</code></pre>
+</div>
+</div>
+</section>
+<section id="prediction-1" class="level4" data-number="5.2.3.2">
+<h4 data-number="5.2.3.2" class="anchored" data-anchor-id="prediction-1"><span class="header-section-number">5.2.3.2</span> Prediction</h4>
+<p>Let us predict posterior probabilities and predict class as well. Both can by done by calling <code>predict()</code> function, where you can specify <code>type = "prob"</code> for posterior probability prediction and <code>type = "class"</code> for class prediction.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> training_dat <span class="sc">|&gt;</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(nb_fit, <span class="at">new_data =</span> training_dat, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(nb_fit, <span class="at">new_data =</span> training_dat, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 6
+  gender age_gr class .pred_1 .pred_2 .pred_class
+  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
+1 M      2      1       0.706 0.294   1          
+2 M      2      2       0.706 0.294   1          
+3 M      3      1       0.706 0.294   1          
+4 M      4      1       0.706 0.294   1          
+5 F      1      1       0.993 0.00744 1          
+6 F      2      2       0.348 0.652   2          
+7 F      2      1       0.348 0.652   2          
+8 F      3      2       0.348 0.652   2          
+9 F      4      2       0.348 0.652   2          </code></pre>
+</div>
+</div>
+</section>
+<section id="use-naivebayes-engine" class="level4" data-number="5.2.3.3">
+<h4 data-number="5.2.3.3" class="anchored" data-anchor-id="use-naivebayes-engine"><span class="header-section-number">5.2.3.3</span> Use <code>{naivebayes}</code> engine</h4>
+<p>Instead of default engine <code>{klaR}</code>, let us use different engine from <code>{naivebayes}</code> package. The only change that you need to make is engine name argument in <code>set_engine()</code> when defining a model. It provides an identical results.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>nb_model <span class="ot">&lt;-</span> <span class="fu">naive_Bayes</span>(<span class="at">smoothness =</span> <span class="dv">0</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"naivebayes"</span>) <span class="co"># use {naivebayes} engine</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>nb_model <span class="sc">|&gt;</span> <span class="fu">translate</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Naive Bayes Model Specification (classification)
+
+Main Arguments:
+  smoothness = 0
+
+Computational engine: naivebayes 
+
+Model fit template:
+naivebayes::naive_bayes(x = missing_arg(), y = missing_arg(), 
+    adjust = 0, usekernel = TRUE)</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>nb_fit <span class="ot">&lt;-</span> </span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  nb_model <span class="sc">|&gt;</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> gender <span class="sc">+</span> age_gr, <span class="at">data =</span> training_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: naive_bayes(): Feature age_gr - zero probabilities are present.
+Consider Laplace smoothing.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>nb_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+
+================================= Naive Bayes ==================================
+
+Call:
+naive_bayes.default(x = maybe_data_frame(x), y = y, usekernel = TRUE, 
+    adjust = ~0)
+
+-------------------------------------------------------------------------------- 
+ 
+Laplace smoothing: 0
+
+-------------------------------------------------------------------------------- 
+ 
+A priori probabilities: 
+
+        1         2 
+0.5555556 0.4444444 
+
+-------------------------------------------------------------------------------- 
+ 
+Tables: 
+
+-------------------------------------------------------------------------------- 
+:: gender (Bernoulli) 
+-------------------------------------------------------------------------------- 
+      
+gender    1    2
+     F 0.40 0.75
+     M 0.60 0.25
+
+-------------------------------------------------------------------------------- 
+:: age_gr (Categorical) 
+-------------------------------------------------------------------------------- 
+      
+age_gr    1    2
+     1 0.20 0.00
+     2 0.40 0.50
+     3 0.20 0.25
+     4 0.20 0.25
+
+--------------------------------------------------------------------------------</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> training_dat <span class="sc">|&gt;</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(nb_fit, <span class="at">new_data =</span> training_dat, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(nb_fit, <span class="at">new_data =</span> training_dat, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 6
+  gender age_gr class .pred_1 .pred_2 .pred_class
+  &lt;fct&gt;  &lt;fct&gt;  &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
+1 M      2      1       0.706 0.294   1          
+2 M      2      2       0.706 0.294   1          
+3 M      3      1       0.706 0.294   1          
+4 M      4      1       0.706 0.294   1          
+5 F      1      1       0.993 0.00744 1          
+6 F      2      2       0.348 0.652   2          
+7 F      2      1       0.348 0.652   2          
+8 F      3      2       0.348 0.652   2          
+9 F      4      2       0.348 0.652   2          </code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="ex-5.4-performance-evaluation" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="ex-5.4-performance-evaluation"><span class="header-section-number">5.2.4</span> Ex 5.4: Performance evaluation</h3>
+<p><code>{yardstick}</code>, which is a part of <code>{tidymodels}</code> framework, provides functions to evaluate performance of classification and regression models. Here, let us take a look at several classification performance metrics.</p>
+<section id="confusion-matrix" class="level4" data-number="5.2.4.1">
+<h4 data-number="5.2.4.1" class="anchored" data-anchor-id="confusion-matrix"><span class="header-section-number">5.2.4.1</span> Confusion matrix</h4>
+<p>Create confusion matrix by calling <code>conf_mat()</code> with classification result data frame. For other required arguments, <code>truth</code> represents a column name of actual class labels and <code>estimate</code> represents a column name of predicted class labels.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">conf_mat</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>          Truth
+Prediction 1 2
+         1 4 1
+         2 1 3</code></pre>
+</div>
+</div>
+</section>
+<section id="accuracy" class="level4" data-number="5.2.4.2">
+<h4 data-number="5.2.4.2" class="anchored" data-anchor-id="accuracy"><span class="header-section-number">5.2.4.2</span> Accuracy</h4>
+<p>Evaluate simple classification accuracy by <code>accuracy()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">accuracy</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.778</code></pre>
+</div>
+</div>
+</section>
+<section id="sensitivity" class="level4" data-number="5.2.4.3">
+<h4 data-number="5.2.4.3" class="anchored" data-anchor-id="sensitivity"><span class="header-section-number">5.2.4.3</span> Sensitivity</h4>
+<p>Use <code>sens()</code>. Pass <code>event_level</code> argument if needs to explicitly define “event” class label. It argument is only applicable to binary classification, and the value should be either <code>"first"</code> or <code>"second"</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sens</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, <span class="at">event_level =</span> <span class="st">"first"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 sens    binary           0.8</code></pre>
+</div>
+</div>
+</section>
+<section id="specificity" class="level4" data-number="5.2.4.4">
+<h4 data-number="5.2.4.4" class="anchored" data-anchor-id="specificity"><span class="header-section-number">5.2.4.4</span> Specificity</h4>
+<p>Use <code>spec()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">spec</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, <span class="at">event_level =</span> <span class="st">"first"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 spec    binary          0.75</code></pre>
+</div>
+</div>
+</section>
+<section id="f1-score" class="level4" data-number="5.2.4.5">
+<h4 data-number="5.2.4.5" class="anchored" data-anchor-id="f1-score"><span class="header-section-number">5.2.4.5</span> F1-score</h4>
+<p>Use <code>f_meas()</code></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f_meas</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, <span class="at">event_level =</span> <span class="st">"first"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 f_meas  binary           0.8</code></pre>
+</div>
+</div>
+</section>
+<section id="evaluate-multiple-metrics" class="level4" data-number="5.2.4.6">
+<h4 data-number="5.2.4.6" class="anchored" data-anchor-id="evaluate-multiple-metrics"><span class="header-section-number">5.2.4.6</span> Evaluate multiple metrics</h4>
+<p><code>{yardstick}</code> provides a convenient way to evaluate multiple metrics.</p>
+<p>First, create a set of metrics to compute by calling <code>metric_set()</code> with metric functions of interest as arguments.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>multiple_metrics <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, sens, spec, f_meas)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s print the object.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>multiple_metrics</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>A metric set, consisting of:
+- `accuracy()`, a class metric | direction: maximize
+- `sens()`, a class metric     | direction: maximize
+- `spec()`, a class metric     | direction: maximize
+- `f_meas()`, a class metric   | direction: maximize</code></pre>
+</div>
+</div>
+<p>By looking at classes and a type of <code>multiple_metrics</code> object, you can see that it is a callable function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(multiple_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "class_prob_metric_set" "metric_set"            "function"             </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a><span class="fu">typeof</span>(multiple_metrics)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "closure"</code></pre>
+</div>
+</div>
+<p>Now, call the function to compute multiple metrics of interest.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb61-2"><a href="#cb61-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multiple_metrics</span>(<span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.778
+2 sens     binary         0.8  
+3 spec     binary         0.75 
+4 f_meas   binary         0.8  </code></pre>
+</div>
+</div>
+
+
+</section>
 </section>
 </section>
 
