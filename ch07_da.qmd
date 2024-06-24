@@ -19,9 +19,12 @@ dat1 <- read_csv("data/ch7_dat1.csv") |>
 
 ### Linear discriminant analysis
 
-Define a model for linear discriminant analysis by calling `discrim_linear()`. The default engine is `{MASS}`. Let us set engine-specific argument `prior = c(0.5, 0.5)` to explicitly set prior probabilities instead of using proportions within training data.
+Define a model for linear discriminant analysis by calling `discrim_linear()`. The default engine is `{MASS}`. Linear discriminant analysis with `{MASS}` engine requires installation and loading `{discrim}` package. Let us set engine-specific argument `prior = c(0.5, 0.5)` to explicitly set prior probabilities instead of using proportions within training data.
+
 
 ```{r}
+library(discrim)
+
 lda_model <- 
   discrim_linear() |> 
   set_engine("MASS", prior = c(0.5, 0.5))
@@ -87,6 +90,8 @@ Almost identical to linear discriminant analysis, except that you should use `di
 
 
 ```{r}
+library(discrim)
+
 qda_model <- 
   discrim_quad() |> 
   set_engine("MASS", prior = c(0.5, 0.5))
@@ -158,6 +163,8 @@ testing_dat <- map(iris_split, testing) |> bind_rows()
 Estimate LDA model on training data.
 
 ```{r}
+library(discrim)
+
 lda_fit <- 
   discrim_linear() |> 
   fit(Species ~ ., data = training_dat)
