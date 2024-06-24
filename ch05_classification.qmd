@@ -93,29 +93,26 @@ dat3
 
 ### Convert data type
 
-Define a recipe to convert categorical inputs and outputs to factor type.
+First, convert output to be a factor, because you are going to build a classification model. Please use typical data wrangling instead of using recipe when transforming output variable.
+
+```{r}
+dat3 <- 
+  dat3 |> 
+  mutate(class = as.factor(class))
+```
+
+Define a recipe to convert categorical input variable into factors by using recipe. When original variable type is numeric, use `step_num2factor()`. When original variable type is character, use `step_string2factor()`.
 
 ```{r}
 nb_rec <- 
   recipe(class ~ gender + age_gr, data = dat3) |> 
-  step_num2factor(class, levels = c("1", "2")) |> 
   step_num2factor(age_gr, levels = c("1", "2", "3", "4")) |> 
   step_string2factor(gender)
 ```
 
-Then, train the recipe by calling `prep()` function.
-
-```{r}
-nb_rec_fit <- prep(nb_rec)
-```
-
-Let us create training data to feed to modeling step, by calling `juice()` function.
-
-```{r}
-training_dat <- juice(nb_rec_fit)
-training_dat
-```
-
+:::{.callout-note}
+If you include output variable type conversion within a recipe and include it in a workflow, `predict()` will return an error because it removes output variable from `new_data` before applying a recipe.
+:::
 
 ### Ex 5.3: Naive bayes clssification
 
@@ -137,12 +134,14 @@ nb_model |> translate()
 ```
 
 
-Let us train the model.
+Let us define workflow and train the model.
 
 ```{r}
 nb_fit <- 
-  nb_model |> 
-  fit(class ~ gender + age_gr, data = training_dat)
+  workflow() |> 
+  add_recipe(nb_rec) |> 
+  add_model(nb_model) |> 
+  fit(dat3)
 
 nb_fit
 ```
@@ -153,10 +152,10 @@ nb_fit
 Let us predict posterior probabilities and predict class as well. Both can by done by calling `predict()` function, where you can specify `type = "prob"` for posterior probability prediction and `type = "class"` for class prediction.
 
 ```{r}
-results <- training_dat |> 
+results <- dat3 |> 
   bind_cols(
-    predict(nb_fit, new_data = training_dat, type = "prob"),
-    predict(nb_fit, new_data = training_dat, type = "class")
+    predict(nb_fit, new_data = dat3, type = "prob"),
+    predict(nb_fit, new_data = dat3, type = "class")
   )
 
 results
@@ -176,15 +175,17 @@ nb_model <- naive_Bayes(smoothness = 0) |>
 nb_model |> translate()
 
 nb_fit <- 
-  nb_model |> 
-  fit(class ~ gender + age_gr, data = training_dat)
+  workflow() |> 
+  add_recipe(nb_rec) |> 
+  add_model(nb_model) |> 
+  fit(dat3)
 
 nb_fit
 
-results <- training_dat |> 
+results <- dat3 |> 
   bind_cols(
-    predict(nb_fit, new_data = training_dat, type = "prob"),
-    predict(nb_fit, new_data = training_dat, type = "class")
+    predict(nb_fit, new_data = dat3, type = "prob"),
+    predict(nb_fit, new_data = dat3, type = "class")
   )
 
 results
