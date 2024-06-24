@@ -52,12 +52,52 @@ tidy(logistic_fit)
 Make a prediction by calling `predict()` function.
 
 ```{r}
-dat1 |> 
+results <- 
+  dat1 |> 
   bind_cols(
     logit = predict(logistic_fit, new_data = dat1, type = "raw"),
     predict(logistic_fit, new_data = dat1, type = "prob"),
     predict(logistic_fit, new_data = dat1, type = "class")
   )
 ```
+
+
+### Ex 6.3: Gompit and Probit
+
+Pass engine-specific argument to use a specific link function of `glm()`.
+
+#### Gompit
+
+```{r}
+gompit_model <- 
+  logistic_reg() |> 
+  set_engine("glm", family = binomial("cloglog"))
+
+gompit_fit <- 
+  workflow() |> 
+  add_formula(Class ~ Break + Sleep + Circle) |> 
+  add_model(gompit_model) |> 
+  fit(dat1)
+
+tidy(gompit_fit)
+```
+
+#### Probit
+
+```{r}
+probit_model <- 
+  logistic_reg() |> 
+  set_engine("glm", family = binomial("probit"))
+
+probit_fit <- 
+  workflow() |> 
+  add_formula(Class ~ Break + Sleep + Circle) |> 
+  add_model(probit_model) |> 
+  fit(dat1)
+
+tidy(probit_fit)
+```
+
+
 
 
