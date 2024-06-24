@@ -1,0 +1,63 @@
+# Logistic regression
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+## Examples 6.1, 6.3
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch6_dat1.csv")
+```
+
+Logistic regression requires outcome variable to be a factor.
+
+```{r}
+dat1 <-
+  dat1 |> 
+  mutate(Class = factor(Class, levels = c("Average", "Excellent")))
+```
+
+
+### Ex 6.1: Logistic regression model
+
+Define a model type to be logistic regression, by calling `logistic_reg()`. By default, it uses `{glm}` engine and `"classification"` mode.
+
+```{r}
+logistic_model <- logistic_reg()
+```
+
+Let us train the model by using `dat1` data. Let us use workflow pipeline. Because we do not have a recipe, we will add formula instead.
+
+```{r}
+logistic_fit <- 
+  workflow() |> 
+  add_formula(Class ~ Break + Sleep + Circle) |> 
+  add_model(logistic_model) |> 
+  fit(dat1)
+
+logistic_fit
+```
+
+Check statistics for each coefficients.
+
+```{r}
+tidy(logistic_fit)
+```
+
+Make a prediction by calling `predict()` function.
+
+```{r}
+dat1 |> 
+  bind_cols(
+    logit = predict(logistic_fit, new_data = dat1, type = "raw"),
+    predict(logistic_fit, new_data = dat1, type = "prob"),
+    predict(logistic_fit, new_data = dat1, type = "class")
+  )
+```
+
+
