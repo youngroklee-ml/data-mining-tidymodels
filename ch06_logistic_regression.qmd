@@ -102,5 +102,60 @@ tidy(normit_fit)
 
 ## Examples 6.4
 
+### Load data
 
+```{r}
+dat2 <- 
+  read_csv("data/ch6_dat2.csv") |> 
+  mutate(Y = factor(Y, levels = c(1, 2, 3)))
+```
+
+
+### Estimate multinomial model
+
+Define a multinomial model by calling `multinom_reg()`. By default, it uses `{nnet}` engine.
+
+```{r}
+mn_model <- multinom_reg()
+```
+
+
+Then fit a model on training data.
+
+```{r}
+mn_fit <- 
+  mn_model |> 
+  fit(Y ~ X1 + X2, data = dat2)
+```
+
+
+Let's see the estimated coefficients.
+
+```{r}
+tidy(mn_fit)
+```
+
+
+### Prediction
+
+Make a prediction by calling `predict()` function.
+
+```{r}
+results <- 
+  dat2 |> 
+  bind_cols(
+    predict(mn_fit, new_data = dat2, type = "prob"),
+    predict(mn_fit, new_data = dat2, type = "class")
+  )
+
+results
+```
+
+### Confusion matrix
+
+Create a confusion matrix by calling `conf_mat()` from `{yardstick}`.
+
+```{r}
+conf_mat(results, truth = Y, estimate = .pred_class)
+```
 
