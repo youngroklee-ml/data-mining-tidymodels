@@ -117,3 +117,67 @@ metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
 metrics_multi(results, truth = class, estimate = .pred_class, .pred_1)
 ```
 
+
+
+## Example 7.7
+
+### Load data
+
+```{r}
+iris <- read_csv("data/iris.csv") |> 
+  mutate(Species = as.factor(Species))
+```
+
+### Train/Test split
+
+Let us make 30 observations from each species as training data, while let remaining 20 observations be testing data.
+
+```{r}
+iris_split <- initial_split(iris, prop = 30 / 50, strata = Species)
+training_dat <- training(iris_split)
+testing_dat <- testing(iris_split)
+```
+
+:::{.callout-note}
+Unfortunately, this does not provide an exact results to a book example. `initial_time_split()` does not consume `strata` argument.
+
+The following code will provide the exactly same results to the book example.
+
+```{.r}
+iris_split <- iris |> 
+  split(iris$Species) |> 
+  map(\(x) initial_time_split(x, prop = 30 / 50))
+
+training_dat <- map(iris_split, training) |> bind_rows()
+testing_dat <- map(iris_split, testing) |> bind_rows()
+```
+:::
+
+### Linear discriminant analysis
+
+Estimate LDA model on training data.
+
+```{r}
+lda_fit <- 
+  discrim_linear() |> 
+  fit(Species ~ ., data = training_dat)
+```
+
+Make a prediction on testing data.
+
+```{r}
+results <- 
+  testing_dat |> 
+  bind_cols(
+    predict(lda_fit, testing_dat, type = "class")
+  )
+
+results
+```
+
+Confusion matrix
+
+```{r}
+conf_mat(results, truth = Species, estimate = .pred_class)
+```
+
