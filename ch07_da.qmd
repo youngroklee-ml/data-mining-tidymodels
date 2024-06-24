@@ -1,0 +1,72 @@
+# Discriminant analysis
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+
+## Example 7.4
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch7_dat1.csv") |> 
+  mutate(class = as.factor(class))
+```
+
+
+### Linear discriminant analysis
+
+Define a model for linear discriminant analysis by calling `discrim_linear()`. The default engine is `{MASS}`. Let us set engine-specific argument `prior = c(0.5, 0.5)` to explicitly set prior probabilities instead of using proportions within training data.
+
+```{r}
+lda_model <- 
+  discrim_linear() |> 
+  set_engine("MASS", prior = c(0.5, 0.5))
+```
+
+Let's check model fit template.
+
+```{r}
+translate(lda_model)
+```
+
+Let's train the model.
+
+```{r}
+lda_fit <- 
+  lda_model |> 
+  fit(class ~ X1 + X2, data = dat1)
+```
+
+`tidy()` function does not support this model, so let us just print the model.
+
+```{r}
+lda_fit
+```
+
+
+### Prediction
+
+Let us make a prediction on training data.
+
+```{r}
+results <-
+  dat1 |> 
+  bind_cols(
+    predict(lda_fit, dat1, type = "prob"),
+    predict(lda_fit, dat1, type = "class")
+  )
+
+results
+```
+
+Let us evaluate the classification performance. Here, `.pred_1` is additionally passed as an argument to compute `roc_auc()`.
+
+```{r}
+metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
+metrics_multi(results, truth = class, estimate = .pred_class, .pred_1)
+```
+
