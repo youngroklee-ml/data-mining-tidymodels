@@ -70,3 +70,50 @@ metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
 metrics_multi(results, truth = class, estimate = .pred_class, .pred_1)
 ```
 
+
+
+## Example 7.6
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch7_dat1.csv") |> 
+  mutate(class = as.factor(class))
+```
+
+### Quadratic discriminant analysis
+
+Almost identical to linear discriminant analysis, except that you should use `discrim_quad()`.
+
+
+```{r}
+qda_model <- 
+  discrim_quad() |> 
+  set_engine("MASS", prior = c(0.5, 0.5))
+
+translate(qda_model)
+
+qda_fit <- 
+  qda_model |> 
+  fit(class ~ X1 + X2, data = dat1)
+
+qda_fit
+```
+
+
+### Prediction
+
+```{r}
+results <-
+  dat1 |> 
+  bind_cols(
+    predict(qda_fit, dat1, type = "prob"),
+    predict(qda_fit, dat1, type = "class")
+  )
+
+results
+
+metrics_multi <- metric_set(accuracy, sens, spec, f_meas, roc_auc)
+metrics_multi(results, truth = class, estimate = .pred_class, .pred_1)
+```
+
