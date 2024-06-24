@@ -82,22 +82,25 @@ gompit_fit <-
 tidy(gompit_fit)
 ```
 
-#### Probit
+#### Normit
 
 ```{r}
-probit_model <- 
+normit_model <- 
   logistic_reg() |> 
   set_engine("glm", family = binomial("probit"))
 
-probit_fit <- 
+normit_fit <- 
   workflow() |> 
   add_formula(Class ~ Break + Sleep + Circle) |> 
-  add_model(probit_model) |> 
+  add_model(normit_model) |> 
   fit(dat1)
 
-tidy(probit_fit)
+tidy(normit_fit)
 ```
 
+
+
+## Examples 6.4
 
 
 
