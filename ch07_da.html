@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data mining with {tidymodels} - 6&nbsp; Logistic regression</title>
+<title>Data mining with {tidymodels} - 7&nbsp; Discriminant analysis</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ch07_da.html" rel="next">
-<link href="./ch05_classification.html" rel="prev">
+<link href="./ch06_logistic_regression.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -115,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch06_logistic_regression.html"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Logistic regression</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch07_da.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -172,13 +171,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ch06_logistic_regression.html" class="sidebar-item-text sidebar-link active">
+  <a href="./ch06_logistic_regression.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Logistic regression</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ch07_da.html" class="sidebar-item-text sidebar-link">
+  <a href="./ch07_da.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></span></a>
   </div>
 </li>
@@ -192,18 +191,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#examples-6.1-6.3" id="toc-examples-6.1-6.3" class="nav-link active" data-scroll-target="#examples-6.1-6.3"><span class="header-section-number">6.1</span> Examples 6.1, 6.3</a>
+  <li><a href="#example-7.4" id="toc-example-7.4" class="nav-link active" data-scroll-target="#example-7.4"><span class="header-section-number">7.1</span> Example 7.4</a>
   <ul class="collapse">
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">6.1.1</span> Load data</a></li>
-  <li><a href="#ex-6.1-logistic-regression-model" id="toc-ex-6.1-logistic-regression-model" class="nav-link" data-scroll-target="#ex-6.1-logistic-regression-model"><span class="header-section-number">6.1.2</span> Ex 6.1: Logistic regression model</a></li>
-  <li><a href="#ex-6.3-gompit-and-probit" id="toc-ex-6.3-gompit-and-probit" class="nav-link" data-scroll-target="#ex-6.3-gompit-and-probit"><span class="header-section-number">6.1.3</span> Ex 6.3: Gompit and Probit</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">7.1.1</span> Load data</a></li>
+  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">7.1.2</span> Linear discriminant analysis</a></li>
+  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">7.1.3</span> Prediction</a></li>
   </ul></li>
-  <li><a href="#examples-6.4" id="toc-examples-6.4" class="nav-link" data-scroll-target="#examples-6.4"><span class="header-section-number">6.2</span> Examples 6.4</a>
+  <li><a href="#example-7.6" id="toc-example-7.6" class="nav-link" data-scroll-target="#example-7.6"><span class="header-section-number">7.2</span> Example 7.6</a>
   <ul class="collapse">
-  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">6.2.1</span> Load data</a></li>
-  <li><a href="#estimate-multinomial-model" id="toc-estimate-multinomial-model" class="nav-link" data-scroll-target="#estimate-multinomial-model"><span class="header-section-number">6.2.2</span> Estimate multinomial model</a></li>
-  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">6.2.3</span> Prediction</a></li>
-  <li><a href="#confusion-matrix" id="toc-confusion-matrix" class="nav-link" data-scroll-target="#confusion-matrix"><span class="header-section-number">6.2.4</span> Confusion matrix</a></li>
+  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">7.2.1</span> Load data</a></li>
+  <li><a href="#quadratic-discriminant-analysis" id="toc-quadratic-discriminant-analysis" class="nav-link" data-scroll-target="#quadratic-discriminant-analysis"><span class="header-section-number">7.2.2</span> Quadratic discriminant analysis</a></li>
+  <li><a href="#prediction-1" id="toc-prediction-1" class="nav-link" data-scroll-target="#prediction-1"><span class="header-section-number">7.2.3</span> Prediction</a></li>
+  </ul></li>
+  <li><a href="#example-7.7" id="toc-example-7.7" class="nav-link" data-scroll-target="#example-7.7"><span class="header-section-number">7.3</span> Example 7.7</a>
+  <ul class="collapse">
+  <li><a href="#load-data-2" id="toc-load-data-2" class="nav-link" data-scroll-target="#load-data-2"><span class="header-section-number">7.3.1</span> Load data</a></li>
+  <li><a href="#traintest-split" id="toc-traintest-split" class="nav-link" data-scroll-target="#traintest-split"><span class="header-section-number">7.3.2</span> Train/Test split</a></li>
+  <li><a href="#linear-discriminant-analysis-1" id="toc-linear-discriminant-analysis-1" class="nav-link" data-scroll-target="#linear-discriminant-analysis-1"><span class="header-section-number">7.3.3</span> Linear discriminant analysis</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -213,7 +217,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Logistic regression</span></h1>
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></h1>
 </div>
 
 
@@ -260,7 +264,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -271,243 +275,332 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 </div>
-<section id="examples-6.1-6.3" class="level2" data-number="6.1">
-<h2 data-number="6.1" class="anchored" data-anchor-id="examples-6.1-6.3"><span class="header-section-number">6.1</span> Examples 6.1, 6.3</h2>
-<section id="load-data" class="level3" data-number="6.1.1">
-<h3 data-number="6.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">6.1.1</span> Load data</h3>
+<section id="example-7.4" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="example-7.4"><span class="header-section-number">7.1</span> Example 7.4</h2>
+<section id="load-data" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">7.1.1</span> Load data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch6_dat1.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch7_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 15 Columns: 4
+<pre><code>Rows: 9 Columns: 4
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-chr (1): Class
-dbl (3): Break, Sleep, Circle
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-</div>
-</div>
-<p>Logistic regression requires outcome variable to be a factor.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  dat1 <span class="sc">|&gt;</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Class =</span> <span class="fu">factor</span>(Class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"Average"</span>, <span class="st">"Excellent"</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="ex-6.1-logistic-regression-model" class="level3" data-number="6.1.2">
-<h3 data-number="6.1.2" class="anchored" data-anchor-id="ex-6.1-logistic-regression-model"><span class="header-section-number">6.1.2</span> Ex 6.1: Logistic regression model</h3>
-<p>Define a model type to be logistic regression, by calling <code>logistic_reg()</code>. By default, it uses <code>{glm}</code> engine and <code>"classification"</code> mode.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>logistic_model <span class="ot">&lt;-</span> <span class="fu">logistic_reg</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Let us train the model by using <code>dat1</code> data. Let us use workflow pipeline. Because we do not have a recipe, we will add formula instead.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>logistic_fit <span class="ot">&lt;-</span> </span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(Class <span class="sc">~</span> Break <span class="sc">+</span> Sleep <span class="sc">+</span> Circle) <span class="sc">|&gt;</span> </span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(logistic_model) <span class="sc">|&gt;</span> </span>
-<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(dat1)</span>
-<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>logistic_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
-Preprocessor: Formula
-Model: logistic_reg()
-
-── Preprocessor ────────────────────────────────────────────────────────────────
-Class ~ Break + Sleep + Circle
-
-── Model ───────────────────────────────────────────────────────────────────────
-
-Call:  stats::glm(formula = ..y ~ ., family = stats::binomial, data = data)
-
-Coefficients:
-(Intercept)        Break        Sleep       Circle  
-    -30.511        2.031        3.471        2.414  
-
-Degrees of Freedom: 14 Total (i.e. Null);  11 Residual
-Null Deviance:      20.19 
-Residual Deviance: 10.42    AIC: 18.42</code></pre>
-</div>
-</div>
-<p>Check statistics for each coefficients.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(logistic_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  term        estimate std.error statistic p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)   -30.5      18.0      -1.69  0.0904
-2 Break           2.03      1.98      1.02  0.306 
-3 Sleep           3.47      2.07      1.67  0.0944
-4 Circle          2.41      1.40      1.73  0.0838</code></pre>
-</div>
-</div>
-<p>Make a prediction by calling <code>predict()</code> function.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  dat1 <span class="sc">|&gt;</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">logit =</span> <span class="fu">predict</span>(logistic_fit, <span class="at">new_data =</span> dat1, <span class="at">type =</span> <span class="st">"raw"</span>),</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(logistic_fit, <span class="at">new_data =</span> dat1, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(logistic_fit, <span class="at">new_data =</span> dat1, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-</section>
-<section id="ex-6.3-gompit-and-probit" class="level3" data-number="6.1.3">
-<h3 data-number="6.1.3" class="anchored" data-anchor-id="ex-6.3-gompit-and-probit"><span class="header-section-number">6.1.3</span> Ex 6.3: Gompit and Probit</h3>
-<p>Pass engine-specific argument to use a specific link function of <code>glm()</code>.</p>
-<section id="gompit" class="level4" data-number="6.1.3.1">
-<h4 data-number="6.1.3.1" class="anchored" data-anchor-id="gompit"><span class="header-section-number">6.1.3.1</span> Gompit</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>gompit_model <span class="ot">&lt;-</span> </span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"cloglog"</span>))</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>gompit_fit <span class="ot">&lt;-</span> </span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(Class <span class="sc">~</span> Break <span class="sc">+</span> Sleep <span class="sc">+</span> Circle) <span class="sc">|&gt;</span> </span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(gompit_model) <span class="sc">|&gt;</span> </span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(dat1)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(gompit_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  term        estimate std.error statistic p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)   -26.4      15.0     -1.76   0.0786
-2 Break           1.35      1.50     0.898  0.369 
-3 Sleep           2.97      1.71     1.73   0.0828
-4 Circle          2.04      1.07     1.91   0.0567</code></pre>
-</div>
-</div>
-</section>
-<section id="normit" class="level4" data-number="6.1.3.2">
-<h4 data-number="6.1.3.2" class="anchored" data-anchor-id="normit"><span class="header-section-number">6.1.3.2</span> Normit</h4>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>normit_model <span class="ot">&lt;-</span> </span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">logistic_reg</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"glm"</span>, <span class="at">family =</span> <span class="fu">binomial</span>(<span class="st">"probit"</span>))</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>normit_fit <span class="ot">&lt;-</span> </span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(Class <span class="sc">~</span> Break <span class="sc">+</span> Sleep <span class="sc">+</span> Circle) <span class="sc">|&gt;</span> </span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(normit_model) <span class="sc">|&gt;</span> </span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(dat1)</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(normit_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 4 × 5
-  term        estimate std.error statistic p.value
-  &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 (Intercept)   -17.9      9.91      -1.80  0.0717
-2 Break           1.26     1.13       1.12  0.264 
-3 Sleep           2.03     1.14       1.78  0.0754
-4 Circle          1.41     0.780      1.81  0.0697</code></pre>
-</div>
-</div>
-</section>
-</section>
-</section>
-<section id="examples-6.4" class="level2" data-number="6.2">
-<h2 data-number="6.2" class="anchored" data-anchor-id="examples-6.4"><span class="header-section-number">6.2</span> Examples 6.4</h2>
-<section id="load-data-1" class="level3" data-number="6.2.1">
-<h3 data-number="6.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">6.2.1</span> Load data</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>dat2 <span class="ot">&lt;-</span> </span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">read_csv</span>(<span class="st">"data/ch6_dat2.csv"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Y =</span> <span class="fu">factor</span>(Y, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 18 Columns: 3
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-dbl (3): X1, X2, Y
+dbl (4): ID, X1, X2, class
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
 </section>
-<section id="estimate-multinomial-model" class="level3" data-number="6.2.2">
-<h3 data-number="6.2.2" class="anchored" data-anchor-id="estimate-multinomial-model"><span class="header-section-number">6.2.2</span> Estimate multinomial model</h3>
-<p>Define a multinomial model by calling <code>multinom_reg()</code>. By default, it uses <code>{nnet}</code> engine.</p>
+<section id="linear-discriminant-analysis" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="linear-discriminant-analysis"><span class="header-section-number">7.1.2</span> Linear discriminant analysis</h3>
+<p>Define a model for linear discriminant analysis by calling <code>discrim_linear()</code>. The default engine is <code>{MASS}</code>. Linear discriminant analysis with <code>{MASS}</code> engine requires installation and loading <code>{discrim}</code> package. Let us set engine-specific argument <code>prior = c(0.5, 0.5)</code> to explicitly set prior probabilities instead of using proportions within training data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>mn_model <span class="ot">&lt;-</span> <span class="fu">multinom_reg</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>
+Attaching package: 'discrim'</code></pre>
 </div>
-<p>Then fit a model on training data.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mn_fit <span class="ot">&lt;-</span> </span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>  mn_model <span class="sc">|&gt;</span> </span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Y <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> dat2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>The following object is masked from 'package:dials':
+
+    smoothness</code></pre>
 </div>
-<p>Let’s see the estimated coefficients.</p>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lda_model <span class="ot">&lt;-</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discrim_linear</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>, <span class="at">prior =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s check model fit template.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidy</span>(mn_fit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">translate</span>(lda_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 6 × 6
-  y.level term        estimate std.error statistic p.value
-  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
-1 2       (Intercept)  -74.3      52.5       -1.42  0.157 
-2 2       X1             0.805     0.746      1.08  0.281 
-3 2       X2            13.0       9.47       1.37  0.170 
-4 3       (Intercept)   85.8      69.1        1.24  0.214 
-5 3       X1            -1.48      0.885     -1.67  0.0953
-6 3       X2           -14.3      13.0       -1.10  0.273 </code></pre>
+<pre><code>Linear Discriminant Model Specification (classification)
+
+Engine-Specific Arguments:
+  prior = c(0.5, 0.5)
+
+Computational engine: MASS 
+
+Model fit template:
+MASS::lda(formula = missing_arg(), data = missing_arg(), prior = c(0.5, 
+    0.5))</code></pre>
+</div>
+</div>
+<p>Let’s train the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  lda_model <span class="sc">|&gt;</span> </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p><code>tidy()</code> function does not support this model, so let us just print the model.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lda_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+Call:
+lda(class ~ X1 + X2, data = data, prior = ~c(0.5, 0.5))
+
+Prior probabilities of groups:
+  1   2 
+0.5 0.5 
+
+Group means:
+   X1  X2
+1 4.0 6.0
+2 6.6 5.4
+
+Coefficients of linear discriminants:
+          LD1
+X1  0.6850490
+X2 -0.7003859</code></pre>
 </div>
 </div>
 </section>
-<section id="prediction" class="level3" data-number="6.2.3">
-<h3 data-number="6.2.3" class="anchored" data-anchor-id="prediction"><span class="header-section-number">6.2.3</span> Prediction</h3>
-<p>Make a prediction by calling <code>predict()</code> function.</p>
+<section id="prediction" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="prediction"><span class="header-section-number">7.1.3</span> Prediction</h3>
+<p>Let us make a prediction on training data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  dat2 <span class="sc">|&gt;</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
-<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(mn_fit, <span class="at">new_data =</span> dat2, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(mn_fit, <span class="at">new_data =</span> dat2, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  dat1 <span class="sc">|&gt;</span> </span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(lda_fit, dat1, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(lda_fit, dat1, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 18 × 7
-      X1    X2 Y     .pred_1 .pred_2 .pred_3 .pred_class
-   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
- 1  9.33  5.02 1       0.371  0.0752 0.554   3          
- 2  9.91  5.01 1       0.496  0.141  0.363   1          
- 3 11.9   4.94 1       0.600  0.335  0.0649  1          
- 4 11.5   5.12 1       0.185  0.813  0.00253 2          
- 5 11.7   5.03 1       0.393  0.591  0.0163  2          
- 6 12.4   4.94 2       0.522  0.453  0.0250  1          
- 7 10.3   5.13 2       0.339  0.636  0.0244  2          
- 8 10.2   4.87 1       0.207  0.0116 0.782   3          
- 9  9.83  5.13 2       0.414  0.524  0.0615  2          
-10 10.8   4.94 3       0.564  0.131  0.305   1          
-11 10.6   4.93 3       0.492  0.0840 0.425   1          
-12  8.66  5.02 3       0.195  0.0230 0.782   3          
-13  9.59  5.01 3       0.418  0.0917 0.490   3          
-14  9.35  4.94 3       0.178  0.0130 0.809   3          
-15 10.2   5.12 2       0.385  0.576  0.0382  2          
-16 12.2   4.93 2       0.584  0.371  0.0454  1          
-17  9.8   5    1       0.450  0.103  0.447   1          
-18  8.8   5.01 3       0.205  0.0238 0.771   3          </code></pre>
+<pre><code># A tibble: 9 × 7
+     ID    X1    X2 class .pred_1 .pred_2 .pred_class
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
+1     1     5     7 1     0.921    0.0789 1          
+2     2     4     3 2     0.0995   0.900  2          
+3     3     7     8 2     0.728    0.272  1          
+4     4     8     6 2     0.0264   0.974  2          
+5     5     3     6 1     0.981    0.0192 1          
+6     6     2     5 1     0.980    0.0199 1          
+7     7     6     6 1     0.356    0.644  2          
+8     8     9     6 2     0.00596  0.994  2          
+9     9     5     4 2     0.103    0.897  2          </code></pre>
+</div>
+</div>
+<p>Let us evaluate the classification performance. Here, <code>.pred_1</code> is additionally passed as an argument to compute <code>roc_auc()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>metrics_multi <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, sens, spec, f_meas, roc_auc)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_multi</span>(results, <span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, .pred_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.778
+2 sens     binary         0.75 
+3 spec     binary         0.8  
+4 f_meas   binary         0.75 
+5 roc_auc  binary         0.95 </code></pre>
 </div>
 </div>
 </section>
-<section id="confusion-matrix" class="level3" data-number="6.2.4">
-<h3 data-number="6.2.4" class="anchored" data-anchor-id="confusion-matrix"><span class="header-section-number">6.2.4</span> Confusion matrix</h3>
-<p>Create a confusion matrix by calling <code>conf_mat()</code> from <code>{yardstick}</code>.</p>
+</section>
+<section id="example-7.6" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="example-7.6"><span class="header-section-number">7.2</span> Example 7.6</h2>
+<section id="load-data-1" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">7.2.1</span> Load data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> Y, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch7_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 9 Columns: 4
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (4): ID, X1, X2, class
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="quadratic-discriminant-analysis" class="level3" data-number="7.2.2">
+<h3 data-number="7.2.2" class="anchored" data-anchor-id="quadratic-discriminant-analysis"><span class="header-section-number">7.2.2</span> Quadratic discriminant analysis</h3>
+<p>Almost identical to linear discriminant analysis, except that you should use <code>discrim_quad()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>qda_model <span class="ot">&lt;-</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discrim_quad</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>, <span class="at">prior =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="fu">translate</span>(qda_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>          Truth
-Prediction 1 2 3
-         1 3 2 2
-         2 2 3 0
-         3 2 0 4</code></pre>
+<pre><code>Quadratic Discriminant Model Specification (classification)
+
+Engine-Specific Arguments:
+  prior = c(0.5, 0.5)
+
+Computational engine: MASS 
+
+Model fit template:
+MASS::qda(formula = missing_arg(), data = missing_arg(), prior = c(0.5, 
+    0.5))</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>qda_fit <span class="ot">&lt;-</span> </span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  qda_model <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> dat1)</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>qda_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>parsnip model object
+
+Call:
+qda(class ~ X1 + X2, data = data, prior = ~c(0.5, 0.5))
+
+Prior probabilities of groups:
+  1   2 
+0.5 0.5 
+
+Group means:
+   X1  X2
+1 4.0 6.0
+2 6.6 5.4</code></pre>
+</div>
+</div>
+</section>
+<section id="prediction-1" class="level3" data-number="7.2.3">
+<h3 data-number="7.2.3" class="anchored" data-anchor-id="prediction-1"><span class="header-section-number">7.2.3</span> Prediction</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  dat1 <span class="sc">|&gt;</span> </span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(qda_fit, dat1, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(qda_fit, dat1, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 9 × 7
+     ID    X1    X2 class   .pred_1 .pred_2 .pred_class
+  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
+1     1     5     7 1     0.920     0.0799  1          
+2     2     4     3 2     0.0000286 1.00    2          
+3     3     7     8 2     0.368     0.632   2          
+4     4     8     6 2     0.0398    0.960   2          
+5     5     3     6 1     0.992     0.00814 1          
+6     6     2     5 1     0.991     0.00905 1          
+7     7     6     6 1     0.539     0.461   1          
+8     8     9     6 2     0.00722   0.993   2          
+9     9     5     4 2     0.00218   0.998   2          </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>metrics_multi <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, sens, spec, f_meas, roc_auc)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_multi</span>(results, <span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, .pred_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 5 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary             1
+2 sens     binary             1
+3 spec     binary             1
+4 f_meas   binary             1
+5 roc_auc  binary             1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="example-7.7" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="example-7.7"><span class="header-section-number">7.3</span> Example 7.7</h2>
+<section id="load-data-2" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="load-data-2"><span class="header-section-number">7.3.1</span> Load data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>iris <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/iris.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Species =</span> <span class="fu">as.factor</span>(Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 150 Columns: 5
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+chr (1): Species
+dbl (4): Sepal.Length, Sepal.Width, Petal.Length, Petal.Width
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+</div>
+</section>
+<section id="traintest-split" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="traintest-split"><span class="header-section-number">7.3.2</span> Train/Test split</h3>
+<p>Let us make 30 observations from each species as training data, while let remaining 20 observations be testing data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>iris_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(iris, <span class="at">prop =</span> <span class="dv">30</span> <span class="sc">/</span> <span class="dv">50</span>, <span class="at">strata =</span> Species)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>training_dat <span class="ot">&lt;-</span> <span class="fu">training</span>(iris_split)</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>testing_dat <span class="ot">&lt;-</span> <span class="fu">testing</span>(iris_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Unfortunately, this does not provide an exact results to a book example. <code>initial_time_split()</code> does not consume <code>strata</code> argument.</p>
+<p>The following code will provide the exactly same results to the book example.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>iris_split <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span> </span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(iris<span class="sc">$</span>Species) <span class="sc">|&gt;</span> </span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(\(x) <span class="fu">initial_time_split</span>(x, <span class="at">prop =</span> <span class="dv">30</span> <span class="sc">/</span> <span class="dv">50</span>))</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>training_dat <span class="ot">&lt;-</span> <span class="fu">map</span>(iris_split, training) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>testing_dat <span class="ot">&lt;-</span> <span class="fu">map</span>(iris_split, testing) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</section>
+<section id="linear-discriminant-analysis-1" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="linear-discriminant-analysis-1"><span class="header-section-number">7.3.3</span> Linear discriminant analysis</h3>
+<p>Estimate LDA model on training data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discrim_linear</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> training_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Make a prediction on testing data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  testing_dat <span class="sc">|&gt;</span> </span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(lda_fit, testing_dat, <span class="at">type =</span> <span class="st">"class"</span>)</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 60 × 6
+   Sepal.Length Sepal.Width Petal.Length Petal.Width Species .pred_class
+          &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;      
+ 1          4.6         3.1          1.5         0.2 setosa  setosa     
+ 2          5           3.6          1.4         0.2 setosa  setosa     
+ 3          5.4         3.9          1.7         0.4 setosa  setosa     
+ 4          4.6         3.4          1.4         0.3 setosa  setosa     
+ 5          4.9         3.1          1.5         0.1 setosa  setosa     
+ 6          4.8         3.4          1.6         0.2 setosa  setosa     
+ 7          4.8         3            1.4         0.1 setosa  setosa     
+ 8          4.3         3            1.1         0.1 setosa  setosa     
+ 9          5.7         4.4          1.5         0.4 setosa  setosa     
+10          5.1         3.7          1.5         0.4 setosa  setosa     
+# ℹ 50 more rows</code></pre>
+</div>
+</div>
+<p>Confusion matrix</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> Species, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>            Truth
+Prediction   setosa versicolor virginica
+  setosa         20          0         0
+  versicolor      0         19         1
+  virginica       0          1        19</code></pre>
 </div>
 </div>
 
@@ -927,14 +1020,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./ch05_classification.html" class="pagination-link" aria-label="Classification">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">Classification</span></span>
+      <a href="./ch06_logistic_regression.html" class="pagination-link" aria-label="Logistic regression">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Logistic regression</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ch07_da.html" class="pagination-link" aria-label="Discriminant analysis">
-        <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
