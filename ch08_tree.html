@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Data mining with {tidymodels} - 7&nbsp; Discriminant analysis</title>
+<title>Data mining with {tidymodels} - 8&nbsp; Tree-based models</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -64,8 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="site_libs/quarto-search/fuse.min.js"></script>
 <script src="site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="./">
-<link href="./ch08_tree.html" rel="next">
-<link href="./ch06_logistic_regression.html" rel="prev">
+<link href="./ch07_da.html" rel="prev">
 <script src="site_libs/quarto-html/quarto.js"></script>
 <script src="site_libs/quarto-html/popper.min.js"></script>
 <script src="site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -115,7 +114,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch07_da.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./ch08_tree.html"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree-based models</span></a></li></ol></nav>
         <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
       <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
@@ -178,13 +177,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ch07_da.html" class="sidebar-item-text sidebar-link active">
+  <a href="./ch07_da.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></span></a>
   </div>
 </li>
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./ch08_tree.html" class="sidebar-item-text sidebar-link">
+  <a href="./ch08_tree.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree-based models</span></span></a>
   </div>
 </li>
@@ -198,23 +197,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#example-7.4" id="toc-example-7.4" class="nav-link active" data-scroll-target="#example-7.4"><span class="header-section-number">7.1</span> Example 7.4</a>
+  <li><a href="#examples-8.2---8.7" id="toc-examples-8.2---8.7" class="nav-link active" data-scroll-target="#examples-8.2---8.7"><span class="header-section-number">8.1</span> Examples 8.2 - 8.7</a>
   <ul class="collapse">
-  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">7.1.1</span> Load data</a></li>
-  <li><a href="#linear-discriminant-analysis" id="toc-linear-discriminant-analysis" class="nav-link" data-scroll-target="#linear-discriminant-analysis"><span class="header-section-number">7.1.2</span> Linear discriminant analysis</a></li>
-  <li><a href="#prediction" id="toc-prediction" class="nav-link" data-scroll-target="#prediction"><span class="header-section-number">7.1.3</span> Prediction</a></li>
-  </ul></li>
-  <li><a href="#example-7.6" id="toc-example-7.6" class="nav-link" data-scroll-target="#example-7.6"><span class="header-section-number">7.2</span> Example 7.6</a>
-  <ul class="collapse">
-  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">7.2.1</span> Load data</a></li>
-  <li><a href="#quadratic-discriminant-analysis" id="toc-quadratic-discriminant-analysis" class="nav-link" data-scroll-target="#quadratic-discriminant-analysis"><span class="header-section-number">7.2.2</span> Quadratic discriminant analysis</a></li>
-  <li><a href="#prediction-1" id="toc-prediction-1" class="nav-link" data-scroll-target="#prediction-1"><span class="header-section-number">7.2.3</span> Prediction</a></li>
-  </ul></li>
-  <li><a href="#example-7.7" id="toc-example-7.7" class="nav-link" data-scroll-target="#example-7.7"><span class="header-section-number">7.3</span> Example 7.7</a>
-  <ul class="collapse">
-  <li><a href="#load-data-2" id="toc-load-data-2" class="nav-link" data-scroll-target="#load-data-2"><span class="header-section-number">7.3.1</span> Load data</a></li>
-  <li><a href="#traintest-split" id="toc-traintest-split" class="nav-link" data-scroll-target="#traintest-split"><span class="header-section-number">7.3.2</span> Train/Test split</a></li>
-  <li><a href="#linear-discriminant-analysis-1" id="toc-linear-discriminant-analysis-1" class="nav-link" data-scroll-target="#linear-discriminant-analysis-1"><span class="header-section-number">7.3.3</span> Linear discriminant analysis</a></li>
+  <li><a href="#load-data" id="toc-load-data" class="nav-link" data-scroll-target="#load-data"><span class="header-section-number">8.1.1</span> Load data</a></li>
+  <li><a href="#ex-8.3-estimate-a-maximal-tree" id="toc-ex-8.3-estimate-a-maximal-tree" class="nav-link" data-scroll-target="#ex-8.3-estimate-a-maximal-tree"><span class="header-section-number">8.1.2</span> Ex 8.3: Estimate a maximal tree</a></li>
+  <li><a href="#ex-8.7-prediction" id="toc-ex-8.7-prediction" class="nav-link" data-scroll-target="#ex-8.7-prediction"><span class="header-section-number">8.1.3</span> Ex 8.7: Prediction</a></li>
+  <li><a href="#tune-tree_depth-parameter" id="toc-tune-tree_depth-parameter" class="nav-link" data-scroll-target="#tune-tree_depth-parameter"><span class="header-section-number">8.1.4</span> Tune <code>tree_depth</code> parameter</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -224,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></h1>
+<h1 class="title"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree-based models</span></h1>
 </div>
 
 
@@ -271,7 +259,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -282,265 +270,276 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Dig deeper into tidy modeling with R at https://www.tmwr.org</code></pre>
 </div>
 </div>
-<section id="example-7.4" class="level2" data-number="7.1">
-<h2 data-number="7.1" class="anchored" data-anchor-id="example-7.4"><span class="header-section-number">7.1</span> Example 7.4</h2>
-<section id="load-data" class="level3" data-number="7.1.1">
-<h3 data-number="7.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">7.1.1</span> Load data</h3>
+<section id="examples-8.2---8.7" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="examples-8.2---8.7"><span class="header-section-number">8.1</span> Examples 8.2 - 8.7</h2>
+<section id="load-data" class="level3" data-number="8.1.1">
+<h3 data-number="8.1.1" class="anchored" data-anchor-id="load-data"><span class="header-section-number">8.1.1</span> Load data</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch7_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df_train <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch8_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">factor</span>(class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
-<pre><code>Rows: 9 Columns: 4
+<pre><code>Rows: 10 Columns: 3
 ── Column specification ────────────────────────────────────────────────────────
 Delimiter: ","
-dbl (4): ID, X1, X2, class
+dbl (3): x1, x2, class
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df_test <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch8_dat2.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">factor</span>(class, <span class="at">levels =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 6 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): x1, x2, class
 
 ℹ Use `spec()` to retrieve the full column specification for this data.
 ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 </div>
 </div>
 </section>
-<section id="linear-discriminant-analysis" class="level3" data-number="7.1.2">
-<h3 data-number="7.1.2" class="anchored" data-anchor-id="linear-discriminant-analysis"><span class="header-section-number">7.1.2</span> Linear discriminant analysis</h3>
-<p>Define a model for linear discriminant analysis by calling <code>discrim_linear()</code>. The default engine is <code>{MASS}</code>. Linear discriminant analysis with <code>{MASS}</code> engine requires installation and loading <code>{discrim}</code> package. Let us set engine-specific argument <code>prior = c(0.5, 0.5)</code> to explicitly set prior probabilities instead of using proportions within training data.</p>
+<section id="ex-8.3-estimate-a-maximal-tree" class="level3" data-number="8.1.2">
+<h3 data-number="8.1.2" class="anchored" data-anchor-id="ex-8.3-estimate-a-maximal-tree"><span class="header-section-number">8.1.2</span> Ex 8.3: Estimate a maximal tree</h3>
+<p>Define a model for decision tree. <code>decision_tree()</code> uses <code>{rpart}</code> package as a default engine. Pass <code>cost_complexity = 0</code> to split a node even if misclassification cost does not decrease. In addition, use <code>min_n = 2</code> argument to try to split a node when the node has two observations.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Attaching package: 'discrim'</code></pre>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>tree_model <span class="ot">&lt;-</span> </span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">decision_tree</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">"classification"</span>, </span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_complexity =</span> <span class="dv">0</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_n =</span> <span class="dv">2</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>The following object is masked from 'package:dials':
-
-    smoothness</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lda_model <span class="ot">&lt;-</span> </span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discrim_linear</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>, <span class="at">prior =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Let’s check model fit template.</p>
+<p>Estimate the model by using training data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">translate</span>(lda_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Linear Discriminant Model Specification (classification)
-
-Engine-Specific Arguments:
-  prior = c(0.5, 0.5)
-
-Computational engine: MASS 
-
-Model fit template:
-MASS::lda(formula = missing_arg(), data = missing_arg(), prior = c(0.5, 
-    0.5))</code></pre>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>tree_fit <span class="ot">&lt;-</span> tree_model <span class="sc">|&gt;</span> </span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> x1 <span class="sc">+</span> x2, <span class="at">data =</span> df_train)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-<p>Let’s train the model.</p>
+<p>Let us see the estimated maximal tree.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> </span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  lda_model <span class="sc">|&gt;</span> </span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> dat1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p><code>tidy()</code> function does not support this model, so let us just print the model.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>lda_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>tree_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>parsnip model object
 
-Call:
-lda(class ~ X1 + X2, data = data, prior = ~c(0.5, 0.5))
+n= 10 
 
-Prior probabilities of groups:
-  1   2 
-0.5 0.5 
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
 
-Group means:
-   X1  X2
-1 4.0 6.0
-2 6.6 5.4
-
-Coefficients of linear discriminants:
-          LD1
-X1  0.6850490
-X2 -0.7003859</code></pre>
+ 1) root 10 5 1 (0.5000000 0.5000000)  
+   2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+   3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857)  
+     6) x1&lt; 1.5 1 0 1 (1.0000000 0.0000000) *
+     7) x1&gt;=1.5 6 1 2 (0.1666667 0.8333333)  
+      14) x2&gt;=4.5 2 1 1 (0.5000000 0.5000000)  
+        28) x1&lt; 3 1 0 1 (1.0000000 0.0000000) *
+        29) x1&gt;=3 1 0 2 (0.0000000 1.0000000) *
+      15) x2&lt; 4.5 4 0 2 (0.0000000 1.0000000) *</code></pre>
 </div>
 </div>
 </section>
-<section id="prediction" class="level3" data-number="7.1.3">
-<h3 data-number="7.1.3" class="anchored" data-anchor-id="prediction"><span class="header-section-number">7.1.3</span> Prediction</h3>
-<p>Let us make a prediction on training data.</p>
+<section id="ex-8.7-prediction" class="level3" data-number="8.1.3">
+<h3 data-number="8.1.3" class="anchored" data-anchor-id="ex-8.7-prediction"><span class="header-section-number">8.1.3</span> Ex 8.7: Prediction</h3>
+<p>Call <code>predict()</code> function to predict classes of test data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  dat1 <span class="sc">|&gt;</span> </span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(lda_fit, dat1, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(lda_fit, dat1, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> df_test <span class="sc">|&gt;</span> </span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(tree_fit, <span class="at">new_data =</span> df_test)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 7
-     ID    X1    X2 class .pred_1 .pred_2 .pred_class
-  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;   &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
-1     1     5     7 1     0.921    0.0789 1          
-2     2     4     3 2     0.0995   0.900  2          
-3     3     7     8 2     0.728    0.272  1          
-4     4     8     6 2     0.0264   0.974  2          
-5     5     3     6 1     0.981    0.0192 1          
-6     6     2     5 1     0.980    0.0199 1          
-7     7     6     6 1     0.356    0.644  2          
-8     8     9     6 2     0.00596  0.994  2          
-9     9     5     4 2     0.103    0.897  2          </code></pre>
+<pre><code># A tibble: 6 × 4
+     x1    x2 class .pred_class
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;      
+1     1     5 1     1          
+2     0     5 1     1          
+3     3     4 2     2          
+4     4     3 2     2          
+5     2     7 1     1          
+6     1     4 2     1          </code></pre>
 </div>
 </div>
-<p>Let us evaluate the classification performance. Here, <code>.pred_1</code> is additionally passed as an argument to compute <code>roc_auc()</code>.</p>
+<p>Evaluate the accuracy of classification on test data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>metrics_multi <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, sens, spec, f_meas, roc_auc)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_multi</span>(results, <span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, .pred_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(results, <span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 3
+<pre><code># A tibble: 1 × 3
   .metric  .estimator .estimate
   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy binary         0.778
-2 sens     binary         0.75 
-3 spec     binary         0.8  
-4 f_meas   binary         0.75 
-5 roc_auc  binary         0.95 </code></pre>
+1 accuracy binary         0.833</code></pre>
 </div>
 </div>
 </section>
-</section>
-<section id="example-7.6" class="level2" data-number="7.2">
-<h2 data-number="7.2" class="anchored" data-anchor-id="example-7.6"><span class="header-section-number">7.2</span> Example 7.6</h2>
-<section id="load-data-1" class="level3" data-number="7.2.1">
-<h3 data-number="7.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">7.2.1</span> Load data</h3>
+<section id="tune-tree_depth-parameter" class="level3" data-number="8.1.4">
+<h3 data-number="8.1.4" class="anchored" data-anchor-id="tune-tree_depth-parameter"><span class="header-section-number">8.1.4</span> Tune <code>tree_depth</code> parameter</h3>
+<p><code>tree_depth</code> is one of hyperparameters of a decision tree, and you may want to determine the best hyperparameter value to use. This can be done by setting parameter <code>tree_depth</code> to be a placeholder <code>tune()</code>.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>dat1 <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch7_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">as.factor</span>(class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 9 Columns: 4
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-dbl (4): ID, X1, X2, class
-
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>tree_model <span class="ot">&lt;-</span> </span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">decision_tree</span>(</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">mode =</span> <span class="st">"classification"</span>, </span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">tree_depth =</span> <span class="fu">tune</span>(),</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">cost_complexity =</span> <span class="dv">0</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">min_n =</span> <span class="dv">2</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-</div>
-</section>
-<section id="quadratic-discriminant-analysis" class="level3" data-number="7.2.2">
-<h3 data-number="7.2.2" class="anchored" data-anchor-id="quadratic-discriminant-analysis"><span class="header-section-number">7.2.2</span> Quadratic discriminant analysis</h3>
-<p>Almost identical to linear discriminant analysis, except that you should use <code>discrim_quad()</code>.</p>
+<p>Let’s recreate a workflow. You can see <code>tree_depth = tune()</code> in the model main arguments section.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>qda_model <span class="ot">&lt;-</span> </span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discrim_quad</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"MASS"</span>, <span class="at">prior =</span> <span class="fu">c</span>(<span class="fl">0.5</span>, <span class="fl">0.5</span>))</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="fu">translate</span>(qda_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>tree_wflow <span class="ot">&lt;-</span> </span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_formula</span>(class <span class="sc">~</span> x1 <span class="sc">+</span> x2) <span class="sc">|&gt;</span> </span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(tree_model)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>tree_wflow</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Quadratic Discriminant Model Specification (classification)
+<pre><code>══ Workflow ════════════════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: decision_tree()
 
-Engine-Specific Arguments:
-  prior = c(0.5, 0.5)
+── Preprocessor ────────────────────────────────────────────────────────────────
+class ~ x1 + x2
 
-Computational engine: MASS 
+── Model ───────────────────────────────────────────────────────────────────────
+Decision Tree Model Specification (classification)
 
-Model fit template:
-MASS::qda(formula = missing_arg(), data = missing_arg(), prior = c(0.5, 
-    0.5))</code></pre>
+Main Arguments:
+  cost_complexity = 0
+  tree_depth = tune()
+  min_n = 2
+
+Computational engine: rpart </code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>qda_fit <span class="ot">&lt;-</span> </span>
-<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  qda_model <span class="sc">|&gt;</span> </span>
-<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(class <span class="sc">~</span> X1 <span class="sc">+</span> X2, <span class="at">data =</span> dat1)</span>
+</div>
+<p>Let us see what parameters are subject to tune.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>tree_set <span class="ot">&lt;-</span> <span class="fu">extract_parameter_set_dials</span>(tree_wflow)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>tree_set</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Collection of 1 parameters for tuning
+
+ identifier       type    object
+ tree_depth tree_depth nparam[+]</code></pre>
+</div>
+</div>
+<p>You can see a specific range of the parameter values by calling <code>extract_parameter_dials()</code> with specifying parameter name of interest to <code>parameter</code> argument.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_parameter_dials</span>(tree_set, <span class="at">parameter =</span> <span class="st">"tree_depth"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Tree Depth (quantitative)
+Range: [1, 15]</code></pre>
+</div>
+</div>
+<p>Each parameter has default range to explore, but you can override the range by calling <code>update()</code>. Let’s set to try <code>tree_depth</code> from 1 to 4.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>tree_set <span class="ot">&lt;-</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  tree_set <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update</span>(<span class="at">tree_depth =</span> <span class="fu">tree_depth</span>(<span class="fu">c</span>(<span class="dv">1</span>L, <span class="dv">4</span>L)))</span>
 <span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>qda_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="fu">extract_parameter_dials</span>(tree_set, <span class="at">parameter =</span> <span class="st">"tree_depth"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>parsnip model object
-
-Call:
-qda(class ~ X1 + X2, data = data, prior = ~c(0.5, 0.5))
-
-Prior probabilities of groups:
-  1   2 
-0.5 0.5 
-
-Group means:
-   X1  X2
-1 4.0 6.0
-2 6.6 5.4</code></pre>
+<pre><code>Tree Depth (quantitative)
+Range: [1, 4]</code></pre>
 </div>
 </div>
-</section>
-<section id="prediction-1" class="level3" data-number="7.2.3">
-<h3 data-number="7.2.3" class="anchored" data-anchor-id="prediction-1"><span class="header-section-number">7.2.3</span> Prediction</h3>
+<p>Let’s evaluate classification performance by using cross-validation. Here we create a cross-validation dataset by calling <code>vfold_cv()</code>. We will use 5-folds cross-validation by setting <code>v = 5</code> and will create 25 different cross-validation datasets by setting <code>repeats = 25</code>. Additionally, let us set <code>strata = class</code> so that each fold has roughly same distribution of <code>class</code> values. This step would take few seconds due to large amount of computation.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
-<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>  dat1 <span class="sc">|&gt;</span> </span>
-<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
-<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(qda_fit, dat1, <span class="at">type =</span> <span class="st">"prob"</span>),</span>
-<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(qda_fit, dat1, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">892347</span>)</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>folds <span class="ot">&lt;-</span> <span class="fu">vfold_cv</span>(df_train, <span class="at">v =</span> <span class="dv">5</span>, <span class="at">repeats =</span> <span class="dv">25</span>, <span class="at">strata =</span> class)</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>search_grid <span class="ot">&lt;-</span> </span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>  tree_wflow <span class="sc">|&gt;</span> </span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tune_grid</span>(</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">resamples =</span> folds,</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">param_info =</span> tree_set</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Let’s see summarized performance by each <code>tree_depth</code> value.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>estimates <span class="ot">&lt;-</span> <span class="fu">collect_metrics</span>(search_grid)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>estimates</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 9 × 7
-     ID    X1    X2 class   .pred_1 .pred_2 .pred_class
-  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;     &lt;dbl&gt;   &lt;dbl&gt; &lt;fct&gt;      
-1     1     5     7 1     0.920     0.0799  1          
-2     2     4     3 2     0.0000286 1.00    2          
-3     3     7     8 2     0.368     0.632   2          
-4     4     8     6 2     0.0398    0.960   2          
-5     5     3     6 1     0.992     0.00814 1          
-6     6     2     5 1     0.991     0.00905 1          
-7     7     6     6 1     0.539     0.461   1          
-8     8     9     6 2     0.00722   0.993   2          
-9     9     5     4 2     0.00218   0.998   2          </code></pre>
+<pre><code># A tibble: 12 × 7
+   tree_depth .metric     .estimator  mean     n std_err .config             
+        &lt;int&gt; &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+ 1          3 accuracy    binary     0.544   125  0.0205 Preprocessor1_Model1
+ 2          3 brier_class binary     0.441   125  0.0206 Preprocessor1_Model1
+ 3          3 roc_auc     binary     0.576   125  0.0228 Preprocessor1_Model1
+ 4          2 accuracy    binary     0.524   125  0.0226 Preprocessor1_Model2
+ 5          2 brier_class binary     0.425   125  0.0224 Preprocessor1_Model2
+ 6          2 roc_auc     binary     0.608   125  0.0276 Preprocessor1_Model2
+ 7          4 accuracy    binary     0.576   125  0.0228 Preprocessor1_Model3
+ 8          4 brier_class binary     0.424   125  0.0228 Preprocessor1_Model3
+ 9          4 roc_auc     binary     0.576   125  0.0228 Preprocessor1_Model3
+10          1 accuracy    binary     0.608   125  0.0276 Preprocessor1_Model4
+11          1 brier_class binary     0.374   125  0.0231 Preprocessor1_Model4
+12          1 roc_auc     binary     0.608   125  0.0276 Preprocessor1_Model4</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>metrics_multi <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(accuracy, sens, spec, f_meas, roc_auc)</span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">metrics_multi</span>(results, <span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class, .pred_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>You can also plot the performance.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="fu">autoplot</span>(search_grid)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch08_tree_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Let’s see best performing <code>tree_depth</code> values based on classification accuracy. This will show <code>tree_depth</code> values in a descending order of classification accuracy.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">show_best</span>(search_grid, <span class="at">metric =</span> <span class="st">"accuracy"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 5 × 3
-  .metric  .estimator .estimate
-  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
-1 accuracy binary             1
-2 sens     binary             1
-3 spec     binary             1
-4 f_meas   binary             1
-5 roc_auc  binary             1</code></pre>
+<pre><code># A tibble: 4 × 7
+  tree_depth .metric  .estimator  mean     n std_err .config             
+       &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt;   &lt;dbl&gt; &lt;chr&gt;               
+1          1 accuracy binary     0.608   125  0.0276 Preprocessor1_Model4
+2          4 accuracy binary     0.576   125  0.0228 Preprocessor1_Model3
+3          3 accuracy binary     0.544   125  0.0205 Preprocessor1_Model1
+4          2 accuracy binary     0.524   125  0.0226 Preprocessor1_Model2</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="example-7.7" class="level2" data-number="7.3">
-<h2 data-number="7.3" class="anchored" data-anchor-id="example-7.7"><span class="header-section-number">7.3</span> Example 7.7</h2>
-<section id="load-data-2" class="level3" data-number="7.3.1">
-<h3 data-number="7.3.1" class="anchored" data-anchor-id="load-data-2"><span class="header-section-number">7.3.1</span> Load data</h3>
+<p>Let’s select the best performing <code>tree_depth</code> value based on classification accuracy.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>iris <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/iris.csv"</span>) <span class="sc">|&gt;</span> </span>
-<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Species =</span> <span class="fu">as.factor</span>(Species))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Rows: 150 Columns: 5
-── Column specification ────────────────────────────────────────────────────────
-Delimiter: ","
-chr (1): Species
-dbl (4): Sepal.Length, Sepal.Width, Petal.Length, Petal.Width
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>highest_accuracy <span class="ot">&lt;-</span> <span class="fu">select_best</span>(search_grid, <span class="at">metric =</span> <span class="st">"accuracy"</span>)</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>highest_accuracy</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 2
+  tree_depth .config             
+       &lt;int&gt; &lt;chr&gt;               
+1          1 Preprocessor1_Model4</code></pre>
+</div>
+</div>
+<p>You can now finalize workflow with the best performing hyperparameter value and estimate a model by using entire training data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>tree_fit <span class="ot">&lt;-</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  tree_wflow <span class="sc">|&gt;</span> </span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">finalize_workflow</span>(highest_accuracy) <span class="sc">|&gt;</span> </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(df_train)</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>tree_fit</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>══ Workflow [trained] ══════════════════════════════════════════════════════════
+Preprocessor: Formula
+Model: decision_tree()
 
-ℹ Use `spec()` to retrieve the full column specification for this data.
-ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+── Preprocessor ────────────────────────────────────────────────────────────────
+class ~ x1 + x2
+
+── Model ───────────────────────────────────────────────────────────────────────
+n= 10 
+
+node), split, n, loss, yval, (yprob)
+      * denotes terminal node
+
+1) root 10 5 1 (0.5000000 0.5000000)  
+  2) x2&gt;=5.5 3 0 1 (1.0000000 0.0000000) *
+  3) x2&lt; 5.5 7 2 2 (0.2857143 0.7142857) *</code></pre>
 </div>
-</div>
-</section>
-<section id="traintest-split" class="level3" data-number="7.3.2">
-<h3 data-number="7.3.2" class="anchored" data-anchor-id="traintest-split"><span class="header-section-number">7.3.2</span> Train/Test split</h3>
-<p>Let us make 30 observations from each species as training data, while let remaining 20 observations be testing data.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>iris_split <span class="ot">&lt;-</span> <span class="fu">initial_split</span>(iris, <span class="at">prop =</span> <span class="dv">30</span> <span class="sc">/</span> <span class="dv">50</span>, <span class="at">strata =</span> Species)</span>
-<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>training_dat <span class="ot">&lt;-</span> <span class="fu">training</span>(iris_split)</span>
-<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>testing_dat <span class="ot">&lt;-</span> <span class="fu">testing</span>(iris_split)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -552,62 +551,37 @@ Note
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Unfortunately, this does not provide an exact results to a book example. <code>initial_time_split()</code> does not consume <code>strata</code> argument.</p>
-<p>The following code will provide the exactly same results to the book example.</p>
-<div class="sourceCode" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>iris_split <span class="ot">&lt;-</span> iris <span class="sc">|&gt;</span> </span>
-<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(iris<span class="sc">$</span>Species) <span class="sc">|&gt;</span> </span>
-<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(\(x) <span class="fu">initial_time_split</span>(x, <span class="at">prop =</span> <span class="dv">30</span> <span class="sc">/</span> <span class="dv">50</span>))</span>
-<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>training_dat <span class="ot">&lt;-</span> <span class="fu">map</span>(iris_split, training) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span>
-<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>testing_dat <span class="ot">&lt;-</span> <span class="fu">map</span>(iris_split, testing) <span class="sc">|&gt;</span> <span class="fu">bind_rows</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>If you pass <code>control = control_grid(save_workflow = TRUE)</code> in <code>tune_grid()</code> call, you can use <code>fit_best()</code> as a shortcut for steps of <code>select_best()</code>, <code>finalize_workflow()</code> and <code>fit()</code>. Please see an example <a href="https://tune.tidymodels.org/reference/fit_best.html">here</a>.</p>
 </div>
 </div>
-</section>
-<section id="linear-discriminant-analysis-1" class="level3" data-number="7.3.3">
-<h3 data-number="7.3.3" class="anchored" data-anchor-id="linear-discriminant-analysis-1"><span class="header-section-number">7.3.3</span> Linear discriminant analysis</h3>
-<p>Estimate LDA model on training data.</p>
+<p>Let’s make a prediction on test data.</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(discrim)</span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>lda_fit <span class="ot">&lt;-</span> </span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">discrim_linear</span>() <span class="sc">|&gt;</span> </span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(Species <span class="sc">~</span> ., <span class="at">data =</span> training_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<p>Make a prediction on testing data.</p>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>  testing_dat <span class="sc">|&gt;</span> </span>
-<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
-<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(lda_fit, testing_dat, <span class="at">type =</span> <span class="st">"class"</span>)</span>
-<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  df_test <span class="sc">|&gt;</span> </span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(tree_fit, df_test)</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 60 × 6
-   Sepal.Length Sepal.Width Petal.Length Petal.Width Species .pred_class
-          &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;      
- 1          4.9         3            1.4         0.2 setosa  setosa     
- 2          5.4         3.9          1.7         0.4 setosa  setosa     
- 3          4.6         3.4          1.4         0.3 setosa  setosa     
- 4          4.4         2.9          1.4         0.2 setosa  setosa     
- 5          4.9         3.1          1.5         0.1 setosa  setosa     
- 6          5.4         3.7          1.5         0.2 setosa  setosa     
- 7          4.3         3            1.1         0.1 setosa  setosa     
- 8          5.1         3.5          1.4         0.3 setosa  setosa     
- 9          5.7         3.8          1.7         0.3 setosa  setosa     
-10          5.1         3.8          1.5         0.3 setosa  setosa     
-# ℹ 50 more rows</code></pre>
+<pre><code># A tibble: 6 × 4
+     x1    x2 class .pred_class
+  &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;      
+1     1     5 1     2          
+2     0     5 1     2          
+3     3     4 2     2          
+4     4     3 2     2          
+5     2     7 1     1          
+6     1     4 2     2          </code></pre>
 </div>
 </div>
-<p>Confusion matrix</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">conf_mat</span>(results, <span class="at">truth =</span> Species, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">accuracy</span>(results, <span class="at">truth =</span> class, <span class="at">estimate =</span> .pred_class)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>            Truth
-Prediction   setosa versicolor virginica
-  setosa         20          0         0
-  versicolor      0         19         0
-  virginica       0          1        20</code></pre>
+<pre><code># A tibble: 1 × 3
+  .metric  .estimator .estimate
+  &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt;
+1 accuracy binary         0.667</code></pre>
 </div>
 </div>
 
@@ -1027,14 +1001,11 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="./ch06_logistic_regression.html" class="pagination-link" aria-label="Logistic regression">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Logistic regression</span></span>
+      <a href="./ch07_da.html" class="pagination-link" aria-label="Discriminant analysis">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Discriminant analysis</span></span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="./ch08_tree.html" class="pagination-link" aria-label="Tree-based models">
-        <span class="nav-page-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Tree-based models</span></span> <i class="bi bi-arrow-right-short"></i>
-      </a>
   </div>
 </nav>
 </div> <!-- /content -->
