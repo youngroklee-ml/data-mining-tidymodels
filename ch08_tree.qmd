@@ -1,4 +1,4 @@
-# Tree-based models
+# Decision tree
 
 ```{r}
 library(tidyverse)
