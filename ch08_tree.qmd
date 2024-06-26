@@ -1,0 +1,189 @@
+# Tree-based models
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+## Examples 8.2 - 8.7
+
+### Load data
+
+```{r}
+df_train <- read_csv("data/ch8_dat1.csv") |> 
+  mutate(class = factor(class, levels = c(1, 2)))
+
+df_test <- read_csv("data/ch8_dat2.csv") |> 
+  mutate(class = factor(class, levels = c(1, 2)))
+```
+
+
+### Ex 8.3: Estimate a maximal tree
+
+Define a model for decision tree. `decision_tree()` uses `{rpart}` package as a default engine. Pass `cost_complexity = 0` to split a node even if misclassification cost does not decrease. In addition, use `min_n = 2` argument to try to split a node when the node has two observations.
+
+```{r}
+tree_model <- 
+  decision_tree(
+    mode = "classification", 
+    cost_complexity = 0,
+    min_n = 2
+  )
+```
+
+Estimate the model by using training data.
+
+```{r}
+tree_fit <- tree_model |> 
+  fit(class ~ x1 + x2, data = df_train)
+```
+
+Let us see the estimated maximal tree.
+
+```{r}
+tree_fit
+```
+
+### Ex 8.7: Prediction
+
+Call `predict()` function to predict classes of test data.
+
+```{r}
+results <- df_test |> 
+  bind_cols(
+    predict(tree_fit, new_data = df_test)
+  )
+
+results
+```
+
+Evaluate the accuracy of classification on test data.
+
+```{r}
+accuracy(results, truth = class, estimate = .pred_class)
+```
+
+
+### Tune `tree_depth` parameter
+
+`tree_depth` is one of hyperparameters of a decision tree, and you may want to determine the best hyperparameter value to use. This can be done by setting parameter `tree_depth` to be a placeholder `tune()`.
+
+```{r}
+tree_model <- 
+  decision_tree(
+    mode = "classification", 
+    tree_depth = tune(),
+    cost_complexity = 0,
+    min_n = 2
+  )
+```
+
+Let's recreate a workflow. You can see `tree_depth = tune()` in the model main arguments section.
+
+```{r}
+tree_wflow <- 
+  workflow() |> 
+  add_formula(class ~ x1 + x2) |> 
+  add_model(tree_model)
+
+tree_wflow
+```
+
+Let us see what parameters are subject to tune.
+
+```{r}
+tree_set <- extract_parameter_set_dials(tree_wflow)
+tree_set
+```
+
+You can see a specific range of the parameter values by calling `extract_parameter_dials()` with specifying parameter name of interest to `parameter` argument.
+
+```{r}
+extract_parameter_dials(tree_set, parameter = "tree_depth")
+```
+
+Each parameter has default range to explore, but you can override the range by calling `update()`. Let's set to try `tree_depth` from 1 to 4.
+
+```{r}
+tree_set <-
+  tree_set |> 
+  update(tree_depth = tree_depth(c(1L, 4L)))
+
+extract_parameter_dials(tree_set, parameter = "tree_depth")
+```
+
+
+Let's evaluate classification performance by using cross-validation. Here we create a cross-validation dataset by calling `vfold_cv()`. We will use 5-folds cross-validation by setting `v = 5` and will create 25 different cross-validation datasets by setting `repeats = 25`. Additionally, let us set `strata = class` so that each fold has roughly same distribution of `class` values. This step would take few seconds due to large amount of computation.
+
+```{r}
+set.seed(892347)
+
+folds <- vfold_cv(df_train, v = 5, repeats = 25, strata = class)
+
+search_grid <- 
+  tree_wflow |> 
+  tune_grid(
+    resamples = folds,
+    param_info = tree_set
+  )
+```
+
+Let's see summarized performance by each `tree_depth` value.
+
+```{r}
+estimates <- collect_metrics(search_grid)
+estimates
+```
+
+You can also plot the performance.
+
+```{r}
+autoplot(search_grid)
+```
+
+Let's see best performing `tree_depth` values based on classification accuracy. This will show `tree_depth` values in a descending order of classification accuracy.
+
+```{r}
+show_best(search_grid, metric = "accuracy")
+```
+
+Let's select the best performing `tree_depth` value based on classification accuracy.
+
+```{r}
+highest_accuracy <- select_best(search_grid, metric = "accuracy")
+highest_accuracy
+```
+
+You can now finalize workflow with the best performing hyperparameter value and estimate a model by using entire training data.
+
+```{r}
+tree_fit <- 
+  tree_wflow |> 
+  finalize_workflow(highest_accuracy) |> 
+  fit(df_train)
+
+tree_fit
+```
+
+:::{.callout-note}
+If you pass `control = control_grid(save_workflow = TRUE)` in `tune_grid()` call, you can use `fit_best()` as a shortcut for steps of `select_best()`, `finalize_workflow()` and `fit()`. Please see an example [here](https://tune.tidymodels.org/reference/fit_best.html).
+:::
+
+Let's make a prediction on test data.
+
+```{r}
+results <-
+  df_test |> 
+  bind_cols(
+    predict(tree_fit, df_test)
+  )
+
+results
+```
+
+```{r}
+accuracy(results, truth = class, estimate = .pred_class)
+```
+
+
