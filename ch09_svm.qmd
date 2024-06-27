@@ -47,12 +47,12 @@ svm_set <-
 ```
 
 
-Repeat 5-fold cross validation 20 times to evaluate performance of each `cost` value. Let's use 15 different values of `cost`. This may take a minute. Please note that `control = control_grid(save_workflow = TRUE)` is passed to make model fitting more convenient in next steps.
+Repeat 5-fold cross validation 10 times to evaluate performance of each `cost` value. Let's use 15 different values of `cost`. This may take a minute. Please note that `control = control_grid(save_workflow = TRUE)` is passed to make model fitting more convenient in next steps.
 
 ```{r}
 set.seed(58945)
 
-folds <- vfold_cv(dat, v = 5, repeats = 20, strata = class)
+folds <- vfold_cv(dat, v = 5, repeats = 10, strata = class)
 
 svm_search_grid <-
   svm_wflow |> 
@@ -129,7 +129,7 @@ svm_set <-
 
 set.seed(90851)
 
-folds <- vfold_cv(dat, v = 5, repeats = 20, strata = class)
+folds <- vfold_cv(dat, v = 5, repeats = 10, strata = class)
 
 svm_search_grid <-
   svm_wflow |> 
@@ -256,9 +256,9 @@ svm_search_bayes <-
   tune_bayes(
     resamples = folds,
     initial = 10,
-    iter = 50,
+    iter = 20,
     metrics = metric_set(accuracy),
-    control = control_bayes(no_improve = 30, save_workflow = TRUE)
+    control = control_bayes(no_improve = 10, save_workflow = TRUE)
   )
 ```
 
