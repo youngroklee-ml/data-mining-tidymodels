@@ -146,6 +146,16 @@ svm_fit <- fit_best(svm_search_grid, metric = "accuracy")
 svm_fit
 ```
 
+### Visualize a model
+
+```{r}
+svm_fit |> 
+  extract_fit_parsnip() |> 
+  extract_fit_engine() |> 
+  plot(data = dat)
+```
+
+
 ### Prediction
 
 Make a prediction by calling `predict()`.
