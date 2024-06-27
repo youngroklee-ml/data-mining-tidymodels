@@ -1,0 +1,300 @@
+# Support vector machine
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+## Example 9.2
+
+### Load data
+
+```{r}
+dat <- read_csv("data/ch9_dat2.csv") |> 
+  mutate(class = as.factor(class))
+dat
+```
+
+
+### Create a workflow for linear support vector machine
+
+Create a linear support vector machine (SVM) modeling workflow. Use `svm_linear()` to define a model; it uses `{LiblineaR}` as default engine, but let us use `{kernlab}` in this example. Set `mode` to be `"classification"` and `cost` as a placeholder to be optimized based on cross validation.
+
+```{r}
+svm_rec <- recipe(class ~ x1 + x2, data = dat)
+
+svm_model <- 
+  svm_linear(cost = tune()) |> 
+  set_engine("kernlab", scaled = FALSE) |>
+  set_mode("classification")
+
+svm_wflow <-
+  workflow() |> 
+  add_recipe(svm_rec) |> 
+  add_model(svm_model)
+```
+
+### Hyperparameter optimization
+
+Let change `cost` parameter space be between 1 (i.e. `10^0`) and 100 (i.e. `10^2`).
+
+```{r}
+svm_set <- extract_parameter_set_dials(svm_wflow)
+svm_set <-
+  svm_set |> 
+  update(cost = cost(range = c(0, 2), trans = transform_log10()))
+```
+
+
+Repeat 5-fold cross validation 20 times to evaluate performance of each `cost` value. Let's use 15 different values of `cost`. This may take a minute. Please note that `control = control_grid(save_workflow = TRUE)` is passed to make model fitting more convenient in next steps.
+
+```{r}
+set.seed(58945)
+
+folds <- vfold_cv(dat, v = 5, repeats = 20, strata = class)
+
+svm_search_grid <-
+  svm_wflow |> 
+  tune_grid(
+    resamples = folds,
+    param_info = svm_set,
+    grid = 15,
+    control = control_grid(save_workflow = TRUE)
+  )
+```
+
+Visualize the cross validation results.
+
+```{r}
+autoplot(svm_search_grid)
+```
+
+Fit a model with parameter value associated with highest classification accuracy.
+
+```{r}
+svm_fit <- fit_best(svm_search_grid, metric = "accuracy")
+svm_fit
+```
+
+
+### Visualize a model
+
+```{r}
+svm_fit |> 
+  extract_fit_parsnip() |> 
+  extract_fit_engine() |> 
+  plot(data = dat)
+```
+
+
+
+## Example 9.7
+
+### Load data
+
+```{r}
+dat <- read_csv("data/ch9_dat3.csv") |> 
+  mutate(class = as.factor(class))
+dat
+```
+
+### Define a workflow for polynomial SVM
+
+R code is almost identical to linear SVM workflow, except using `svm_poly()` instead of `svm_linear()` in model definition and setting `degree` parameter for polynomial degree. `{kernlab}` is a default engine for `svm_poly()`.
+
+```{r}
+svm_rec <- recipe(class ~ x1 + x2, data = dat)
+
+svm_model <- 
+  svm_poly(cost = tune(), degree = 2) |> 
+  set_engine("kernlab", scaled = FALSE) |>
+  set_mode("classification")
+
+svm_wflow <-
+  workflow() |> 
+  add_recipe(svm_rec) |> 
+  add_model(svm_model)
+```
+
+### Hyperparameter optimization
+
+Take the same approach to the previous example.
+
+```{r}
+svm_set <- extract_parameter_set_dials(svm_wflow)
+svm_set <-
+  svm_set |> 
+  update(cost = cost(range = c(0, 2), trans = transform_log10()))
+
+set.seed(90851)
+
+folds <- vfold_cv(dat, v = 5, repeats = 20, strata = class)
+
+svm_search_grid <-
+  svm_wflow |> 
+  tune_grid(
+    resamples = folds,
+    param_info = svm_set,
+    grid = 15,
+    control = control_grid(save_workflow = TRUE)
+  )
+
+autoplot(svm_search_grid)
+
+svm_fit <- fit_best(svm_search_grid, metric = "accuracy")
+svm_fit
+```
+
+### Prediction
+
+Make a prediction by calling `predict()`.
+
+```{r}
+results <- dat |> 
+  bind_cols(
+    predict(svm_fit, dat)
+  )
+
+results
+```
+
+Find misclassified observations. Used `add_rowindex()` to have row number in new column `.row` to clarify which row in the data have misclassified cases.
+
+```{r}
+results |> 
+  add_rowindex() |> 
+  filter(class != .pred_class)
+```
+
+
+## Example 9.8
+
+### Load data
+
+Class label `2` means benign, while `4` means malignant. Let us `4` be the first class in class levels.
+
+Original data include several rows that contain missing values. Remove them before analysis. 
+
+```{r}
+dat <- read_csv("data/breast-cancer-wisconsin.csv") |> 
+  mutate(class = factor(class, levels = c(4, 2))) |> 
+  drop_na()
+```
+
+### Train/Test data split
+
+Split data into training and testing data sets in 2:1 ratio. Column `X1` represents sample code number, and some samples appear multiple times in the data. To avoid data leakage, use `group_initial_split()` with `group = X1` argument to split data by a set of sample code.
+
+```{r}
+set.seed(578925)
+dat_split <- group_initial_split(dat, group = X1, prop = 2 / 3)
+training_dat <- training(dat_split)
+testing_dat <- testing(dat_split)
+```
+
+### Define a workflow for nonlinear SVM with radius basis function (RBF) kernel
+
+Define a recipe with model formula. Exclude `X1` from predictors.
+
+```{r}
+svm_rec <- 
+  recipe(class ~ ., data = training_dat) |> 
+  step_rm(X1)
+```
+
+Use `svm_rbf()` to define a SVM model with radius basis function (RBF) kernel. This kernel function takes a hyperparameter `rbf_sigma`. Let us make it as a placeholder as well as `cost`, so both hyperparameters are optimized through cross-validation process. The default engine for `svm_rbf()` is `{kernlab}`.
+
+```{r}
+svm_model <-
+  svm_rbf(cost = tune(), rbf_sigma = tune()) |>
+  set_engine("kernlab") |> 
+  set_mode("classification")
+```
+
+Define a workflow.
+
+```{r}
+svm_wflow <-
+  workflow() |> 
+  add_recipe(svm_rec) |> 
+  add_model(svm_model)
+```
+
+### Hyperparameter optimization
+
+See there are two hyperparameters to be tuned. Let us rely on the default parameter value spaces in this example.
+
+```{r}
+svm_set <- extract_parameter_set_dials(svm_wflow)
+svm_set
+```
+
+Construct data split for 10-fold cross-validation. Let us do not repeat the cross-validation in this example. As did in initial training/testing split, create folds by sample code number `X1` by calling `group_vfold_cv()`.
+
+```{r}
+set.seed(249085)
+
+folds <- group_vfold_cv(dat, group = X1, v = 10)
+```
+
+Call `tune_bayes()` to tune hyperparameters by Bayesian optimization. Set `metrics = metric_set(accuracy)` to optimize hyperparameters based on classification accuracy. For more details, please see [tidymodels website](https://www.tidymodels.org/learn/work/bayes-opt/).
+
+```{r}
+svm_search_bayes <-
+  svm_wflow |> 
+  tune_bayes(
+    resamples = folds,
+    initial = 10,
+    iter = 50,
+    metrics = metric_set(accuracy),
+    control = control_bayes(no_improve = 30, save_workflow = TRUE)
+  )
+```
+
+Few best performing hyperparameters are as follows:
+
+```{r}
+show_best(svm_search_bayes)
+```
+
+
+Final model:
+
+```{r}
+svm_fit <- fit_best(svm_search_bayes)
+svm_fit
+```
+
+
+### Prediction
+
+Call `predict()` to make a prediction.
+
+```{r}
+results <- 
+  testing_dat |> 
+  bind_cols(
+    predict(svm_fit, new_data = testing_dat)
+  )
+
+results
+```
+
+See confusion matrix.
+
+```{r}
+conf_mat(results, truth = class, estimate = .pred_class)
+```
+
+See classification accuracy, F1-score, and some other metrics.
+
+```{r}
+multi_metrics <- metric_set(accuracy, f_meas, precision, recall)
+multi_metrics(results, truth = class, estimate = .pred_class)
+```
+
+
+
+
+

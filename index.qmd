@@ -24,5 +24,7 @@ library(mixOmics)
 library(kknn)
 library(klaR)
 library(naivebayes)
+library(LiblineaR)
+library(kernlab)
 ```
 
