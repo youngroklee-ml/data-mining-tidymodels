@@ -1,0 +1,100 @@
+# Ensemble
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+tidymodels_conflicts()
+```
+
+
+## Examples 10.2
+
+### Load data
+
+Load data and convert outcome to be a factor variable because we are going to develop classifier.
+
+```{r}
+dat <- read_csv("data/ch10_dat1.csv") |> 
+  mutate(Y = factor(Y))
+dat
+```
+
+### Train a random forest classifier
+
+Let us follow a typical workflow creation process.
+
+#### Reciple
+
+`X1`, `X2` and `X3` are categorical variables, so create a recipe to to convert them to factor. You can use `all_string_predictors()` instead of listing every character-type input variables.
+
+```{r}
+rf_rec <- 
+  recipe(Y ~ ., data = dat) |> 
+  step_string2factor(all_string_predictors())
+```
+
+#### Model
+
+Use `rand_forest()` to define a random forest model. Random forest model consumes three parameters: 
+
+- `mtry`: the number of variables to be considered in each split
+- `trees`: the number of trees to be created
+- `min_n`: the minimum number of observations in a node to be candidate for further split
+
+Set `mtry = 2`, `trees = 4`, and `min_n = 2` for this example with tiny data. When you are dealing with a large and complex data, it would be better to use larger parameter values, especially for `mtry` and `trees`.
+
+Default engine is from `{ranger}` package. 
+
+```{r}
+rf_model <- 
+  rand_forest(mtry = 2, trees = 4, min_n = 2) |> 
+  set_engine("ranger") |> 
+  set_mode("classification")
+```
+
+
+#### Workflow
+
+Define a workflow by combining a recipe and a model.
+
+```{r}
+rf_wflow <- 
+  workflow() |> 
+  add_recipe(rf_rec) |> 
+  add_model(rf_model)
+```
+
+
+#### Train a model
+
+Call `fit()` function to estimate the random forest classifier.
+
+```{r}
+rf_fit <- 
+  rf_wflow |> 
+  fit(dat)
+
+rf_fit
+```
+
+
+### Use different engine
+
+`{randomForest}` is a R package that first came in 2002. If you use this engine instead of the default engine `{ranger}`, call `update_model()` and pass new model that you want to use as an argument. As you want to change only engine while preserving hyperparameter set up, call `set_engine()` to override the engine definition.
+
+```{r}
+rf_wflow <- 
+  rf_wflow |> 
+  update_model(set_engine(rf_model, "randomForest"))
+```
+
+Let's train the new model.
+
+```{r}
+rf_fit <- 
+  rf_wflow |> 
+  fit(dat)
+
+rf_fit
+```
+

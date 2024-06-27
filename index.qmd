@@ -26,5 +26,7 @@ library(klaR)
 library(naivebayes)
 library(LiblineaR)
 library(kernlab)
+library(ranger)
+library(randomForest)
 ```
 
