@@ -7,9 +7,13 @@ This is a book to convert example code on [https://youngroklee-ml.github.io/data
 
 The tidymodels framework is a collection of packages to provide intuitive and unified interface for modeling and machine learning. To get more information, please see the following materials:
 
-- tidymodels website: [https://www.tidymodels.org](https://www.tidymodels.org)
+- `{tidymodels}` website: [https://www.tidymodels.org](https://www.tidymodels.org)
 - "Tidy modeling with R" by Max Kuhn and Julia Silge: [https://www.tmwr.org](https://www.tmwr.org)
 
+
+## Additional interface package for `{tidyclust}`
+
+Clustering is not supported in core `{tidymodels}`. To conduct cluster analysis, use `{tidyclust}`.
 
 ## Model engine packages
 
