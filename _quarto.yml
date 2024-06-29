@@ -16,6 +16,8 @@ book:
     - ch08_tree.qmd
     - ch09_svm.qmd
     - ch10_ensemble.qmd
+    - ch11_cluster.qmd
+    - ch12_hierarchical_clustering.qmd
 
 format:
   html:

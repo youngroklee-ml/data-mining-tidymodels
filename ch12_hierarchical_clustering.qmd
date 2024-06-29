@@ -123,3 +123,162 @@ hc_fit |>
   sse_within()
 ```
 
+
+## Example 12.2
+
+### Load data
+
+```{r}
+dat2 <- read_csv("data/ch12_dat2.csv")
+dat2
+```
+
+
+### Create a workflow with hyperparameter placeholder
+
+In this example, we are going to use Ward's method. The implementation should be almost identical, except passing `linkage_method = "ward.D2"` argument in `hier_clust()`.
+
+To make the example richer, let us implement hyperparameter tuning that optimize the number of clusters by tuning `num_clusters` parameter. For additional examples of hyperparameter tuning, please see [`{tidyclust}` website](https://tidyclust.tidymodels.org/articles/tuning_and_metrics.html).
+
+
+```{r}
+hc_rec <- recipe(~ x1 + x2, data = dat2)
+
+hc_model <- hier_clust(
+  num_clusters = tune(),
+  linkage_method = "ward.D2"
+)
+
+hc_wflow <-
+  workflow() |> 
+  add_recipe(hc_rec) |> 
+  add_model(hc_model)
+```
+
+
+### Tune a hyperparameter
+
+Let us use leave-one-out (LOO) cross-validation to tune the hyperparameter value. `{rsample}` package has `loo_cv()` function to create LOO CV dataset, but as of 2024-06-29, unfortunately, `{tune}` does not support `loo_cv()`. Instead, in `vfold_cv()`, set `v = nrow(dat2)` so that it is practically the same to LOO CV.
+
+```{r}
+dat2_cv <- vfold_cv(dat2, v = nrow(dat2))
+```
+
+By default, it will try number of clusters from 1 to 10. You can change the range of the number of clusters as the same to supervised learning, by using a parameter set object.
+
+```{r}
+hc_set <- 
+  hc_wflow |> 
+  extract_parameter_set_dials() |> 
+  update(num_clusters = num_clusters(range(1L, 6L)))
+
+hc_grid <- tune_cluster(
+  hc_wflow,
+  resamples = dat2_cv,
+  param_info = hc_set,
+  metrics = cluster_metric_set(silhouette_avg)
+)
+```
+
+Or, you can create an explicit grid of hyperparameter values that you want to try.
+
+```{r}
+clust_num_grid <- grid_regular(
+  num_clusters(range = c(1L, 6L)),
+  levels = 6
+)
+
+clust_num_grid
+
+hc_grid <- tune_cluster(
+  hc_wflow,
+  resamples = dat2_cv,
+  grid = clust_num_grid,
+  metrics = cluster_metric_set(silhouette_avg)
+)
+```
+
+
+Let us see the cross-validated average silhouette by the number of clusters.
+
+```{r}
+hc_grid |> 
+  collect_metrics()
+```
+
+Please note that the metric for `num_clusters = 1` is not determined. Let us force the value to be 0.
+
+```{r}
+hc_cv_sihouette <- 
+  hc_grid |> 
+  collect_metrics() |> 
+  filter(.metric == "silhouette_avg") |> 
+  replace_na(list(mean = 0))
+
+hc_cv_sihouette
+```
+
+
+And visualize the results.
+
+```{r}
+hc_cv_sihouette |> 
+  ggplot(aes(x = num_clusters, y = mean)) + 
+  geom_line() + 
+  geom_point() +
+  scale_x_continuous(breaks = seq(1, 6, by = 1)) +
+  labs(title = "Average Silouette: leave-one-out cross-validation")
+```
+
+The number of clusters that results in the highest average silhouette value is considered as the optimal number of clusters.
+
+```{r}
+opt_num_clusters <-
+  hc_cv_sihouette |> 
+  slice_max(mean, n = 1, with_ties = FALSE)
+
+opt_num_clusters
+```
+
+:::{.callout-note}
+`show_best()` and `select_best()` are not appropriate for this use case, because they return hyperparameters with the lowest average silhouette rather than the largest, as of 2024-06-29. `fit_best()` does not support the `{tidyclust}` models.
+:::
+
+
+### Final cluster solution
+
+Train a final solution by applying the optimal number of clusters. Use `finalize_workflow_tidyclust()` for `{tidyclust}` model objects, instead of `final_workflow()` that we used for `{parsnip}` model objects.
+
+```{r}
+hc_fit <- 
+  hc_wflow |> 
+  finalize_workflow_tidyclust(opt_num_clusters) |> 
+  fit(dat2)
+
+hc_fit
+```
+
+Visualize a dendrogram.
+
+```{r}
+hc_fit |> 
+  extract_fit_engine() |> 
+  plot()
+```
+
+:::{.callout-note}
+You can directly call `extract_fit_engine()` with workflow, without extracting a model object with `extract_fit_parsnip()` first.
+:::
+
+See the cluster solution.
+
+```{r}
+results <- 
+  dat2 |> 
+  bind_cols(
+    extract_cluster_assignment(hc_fit)
+  )
+
+results
+```
+
