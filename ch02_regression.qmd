@@ -3,7 +3,6 @@
 ```{r}
 library(tidyverse)
 library(tidymodels)
-tidymodels_conflicts()
 ```
 
 ## Examples 2.3 - 2.5, 2.7, 2.10 - 2.11
