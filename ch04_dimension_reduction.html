@@ -212,6 +212,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Hierarchical clustering</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13_nonhierarchical_clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-hierarchical clustering</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -357,9 +363,9 @@ dbl (5): X1, X2, X3, X4, X5
 <pre><code># A tibble: 3 × 6
   number operation type      trained skip  id             
    &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;          
-1      1 step      rm        FALSE   FALSE rm_1tRjK       
-2      2 step      normalize FALSE   FALSE normalize_K3TXt
-3      3 step      pca       FALSE   FALSE pca_J6PxW      </code></pre>
+1      1 step      rm        FALSE   FALSE rm_emDUH       
+2      2 step      normalize FALSE   FALSE normalize_R7zGB
+3      3 step      pca       FALSE   FALSE pca_R6pQw      </code></pre>
 </div>
 </div>
 <p>Let us estimate PCA model.</p>
@@ -373,9 +379,9 @@ dbl (5): X1, X2, X3, X4, X5
 <pre><code># A tibble: 3 × 6
   number operation type      trained skip  id             
    &lt;int&gt; &lt;chr&gt;     &lt;chr&gt;     &lt;lgl&gt;   &lt;lgl&gt; &lt;chr&gt;          
-1      1 step      rm        TRUE    FALSE rm_1tRjK       
-2      2 step      normalize TRUE    FALSE normalize_K3TXt
-3      3 step      pca       TRUE    FALSE pca_J6PxW      </code></pre>
+1      1 step      rm        TRUE    FALSE rm_emDUH       
+2      2 step      normalize TRUE    FALSE normalize_R7zGB
+3      3 step      pca       TRUE    FALSE pca_R6pQw      </code></pre>
 </div>
 </div>
 <p>In this example, PCA is the 3rd step. By passing argument <code>number = 3</code> when calling <code>tidy()</code>, you can extract loadings.</p>
@@ -385,16 +391,16 @@ dbl (5): X1, X2, X3, X4, X5
 <pre><code># A tibble: 25 × 4
    terms   value component id       
    &lt;chr&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;    
- 1 X1     0.0761 PC1       pca_J6PxW
- 2 X2    -0.395  PC1       pca_J6PxW
- 3 X3     0.570  PC1       pca_J6PxW
- 4 X4    -0.560  PC1       pca_J6PxW
- 5 X5    -0.448  PC1       pca_J6PxW
- 6 X1     0.780  PC2       pca_J6PxW
- 7 X2     0.565  PC2       pca_J6PxW
- 8 X3     0.162  PC2       pca_J6PxW
- 9 X4    -0.197  PC2       pca_J6PxW
-10 X5     0.0864 PC2       pca_J6PxW
+ 1 X1     0.0761 PC1       pca_R6pQw
+ 2 X2    -0.395  PC1       pca_R6pQw
+ 3 X3     0.570  PC1       pca_R6pQw
+ 4 X4    -0.560  PC1       pca_R6pQw
+ 5 X5    -0.448  PC1       pca_R6pQw
+ 6 X1     0.780  PC2       pca_R6pQw
+ 7 X2     0.565  PC2       pca_R6pQw
+ 8 X3     0.162  PC2       pca_R6pQw
+ 9 X4    -0.197  PC2       pca_R6pQw
+10 X5     0.0864 PC2       pca_R6pQw
 # ℹ 15 more rows</code></pre>
 </div>
 </div>
@@ -406,11 +412,11 @@ dbl (5): X1, X2, X3, X4, X5
 <pre><code># A tibble: 5 × 7
   terms id            PC1     PC2       PC3      PC4     PC5
   &lt;chr&gt; &lt;chr&gt;       &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;   &lt;dbl&gt;
-1 X1    pca_J6PxW  0.0761  0.780   0.000892  0.141    0.605 
-2 X2    pca_J6PxW -0.395   0.565  -0.295    -0.118   -0.651 
-3 X3    pca_J6PxW  0.570   0.162   0.241     0.638   -0.429 
-4 X4    pca_J6PxW -0.560  -0.197  -0.257     0.748    0.150 
-5 X5    pca_J6PxW -0.448   0.0864  0.888     0.00367 -0.0571</code></pre>
+1 X1    pca_R6pQw  0.0761  0.780   0.000892  0.141    0.605 
+2 X2    pca_R6pQw -0.395   0.565  -0.295    -0.118   -0.651 
+3 X3    pca_R6pQw  0.570   0.162   0.241     0.638   -0.429 
+4 X4    pca_R6pQw -0.560  -0.197  -0.257     0.748    0.150 
+5 X5    pca_R6pQw -0.448   0.0864  0.888     0.00367 -0.0571</code></pre>
 </div>
 </div>
 <p>By additionally passing <code>type = "variance"</code> argument, you can see eigenvalues from the rows associated with <code>terms == "variance"</code>, and derived statistics.</p>
@@ -420,26 +426,26 @@ dbl (5): X1, X2, X3, X4, X5
 <pre><code># A tibble: 20 × 4
    terms                          value component id       
    &lt;chr&gt;                          &lt;dbl&gt;     &lt;int&gt; &lt;chr&gt;    
- 1 variance                      2.76           1 pca_J6PxW
- 2 variance                      1.61           2 pca_J6PxW
- 3 variance                      0.551          3 pca_J6PxW
- 4 variance                      0.0641         4 pca_J6PxW
- 5 variance                      0.0183         5 pca_J6PxW
- 6 cumulative variance           2.76           1 pca_J6PxW
- 7 cumulative variance           4.37           2 pca_J6PxW
- 8 cumulative variance           4.92           3 pca_J6PxW
- 9 cumulative variance           4.98           4 pca_J6PxW
-10 cumulative variance           5              5 pca_J6PxW
-11 percent variance             55.2            1 pca_J6PxW
-12 percent variance             32.1            2 pca_J6PxW
-13 percent variance             11.0            3 pca_J6PxW
-14 percent variance              1.28           4 pca_J6PxW
-15 percent variance              0.365          5 pca_J6PxW
-16 cumulative percent variance  55.2            1 pca_J6PxW
-17 cumulative percent variance  87.3            2 pca_J6PxW
-18 cumulative percent variance  98.4            3 pca_J6PxW
-19 cumulative percent variance  99.6            4 pca_J6PxW
-20 cumulative percent variance 100              5 pca_J6PxW</code></pre>
+ 1 variance                      2.76           1 pca_R6pQw
+ 2 variance                      1.61           2 pca_R6pQw
+ 3 variance                      0.551          3 pca_R6pQw
+ 4 variance                      0.0641         4 pca_R6pQw
+ 5 variance                      0.0183         5 pca_R6pQw
+ 6 cumulative variance           2.76           1 pca_R6pQw
+ 7 cumulative variance           4.37           2 pca_R6pQw
+ 8 cumulative variance           4.92           3 pca_R6pQw
+ 9 cumulative variance           4.98           4 pca_R6pQw
+10 cumulative variance           5              5 pca_R6pQw
+11 percent variance             55.2            1 pca_R6pQw
+12 percent variance             32.1            2 pca_R6pQw
+13 percent variance             11.0            3 pca_R6pQw
+14 percent variance              1.28           4 pca_R6pQw
+15 percent variance              0.365          5 pca_R6pQw
+16 cumulative percent variance  55.2            1 pca_R6pQw
+17 cumulative percent variance  87.3            2 pca_R6pQw
+18 cumulative percent variance  98.4            3 pca_R6pQw
+19 cumulative percent variance  99.6            4 pca_R6pQw
+20 cumulative percent variance 100              5 pca_R6pQw</code></pre>
 </div>
 </div>
 </section>

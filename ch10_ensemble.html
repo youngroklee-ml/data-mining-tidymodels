@@ -212,6 +212,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text"><span class="chapter-number">12</span>&nbsp; <span class="chapter-title">Hierarchical clustering</span></span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./ch13_nonhierarchical_clustering.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">13</span>&nbsp; <span class="chapter-title">Non-hierarchical clustering</span></span></a>
+  </div>
+</li>
     </ul>
     </div>
 </nav>
@@ -401,7 +407,7 @@ Mtry:                             2
 Target node size:                 2 
 Variable importance mode:         none 
 Splitrule:                        gini 
-OOB prediction error (Brier s.):  0.5625 </code></pre>
+OOB prediction error (Brier s.):  0.8 </code></pre>
 </div>
 </div>
 </section>
@@ -439,11 +445,11 @@ Call:
                      Number of trees: 4
 No. of variables tried at each split: 2
 
-        OOB estimate of  error rate: 60%
+        OOB estimate of  error rate: 75%
 Confusion matrix:
     no yes class.error
-no   1   2   0.6666667
-yes  1   1   0.5000000</code></pre>
+no   1   1         0.5
+yes  2   0         1.0</code></pre>
 </div>
 </div>
 </section>
