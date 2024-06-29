@@ -283,7 +283,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -294,7 +294,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Use tidymodels_prefer() to resolve common conflicts.</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 </div>
 <section id="example-7.4" class="level2" data-number="7.1">
@@ -599,15 +599,15 @@ Note
    Sepal.Length Sepal.Width Petal.Length Petal.Width Species .pred_class
           &lt;dbl&gt;       &lt;dbl&gt;        &lt;dbl&gt;       &lt;dbl&gt; &lt;fct&gt;   &lt;fct&gt;      
  1          5.1         3.5          1.4         0.2 setosa  setosa     
- 2          4.6         3.4          1.4         0.3 setosa  setosa     
- 3          4.9         3.1          1.5         0.1 setosa  setosa     
- 4          5.4         3.7          1.5         0.2 setosa  setosa     
- 5          4.8         3            1.4         0.1 setosa  setosa     
- 6          4.3         3            1.1         0.1 setosa  setosa     
- 7          5.8         4            1.2         0.2 setosa  setosa     
- 8          5.7         4.4          1.5         0.4 setosa  setosa     
- 9          5.4         3.9          1.3         0.4 setosa  setosa     
-10          5.1         3.3          1.7         0.5 setosa  setosa     
+ 2          4.9         3            1.4         0.2 setosa  setosa     
+ 3          4.7         3.2          1.3         0.2 setosa  setosa     
+ 4          4.6         3.4          1.4         0.3 setosa  setosa     
+ 5          4.9         3.1          1.5         0.1 setosa  setosa     
+ 6          4.8         3.4          1.6         0.2 setosa  setosa     
+ 7          5.7         4.4          1.5         0.4 setosa  setosa     
+ 8          5.1         3.5          1.4         0.3 setosa  setosa     
+ 9          5.1         3.8          1.5         0.3 setosa  setosa     
+10          5.1         3.7          1.5         0.4 setosa  setosa     
 # ℹ 50 more rows</code></pre>
 </div>
 </div>
@@ -618,8 +618,8 @@ Note
 <pre><code>            Truth
 Prediction   setosa versicolor virginica
   setosa         20          0         0
-  versicolor      0         19         0
-  virginica       0          1        20</code></pre>
+  versicolor      0         19         1
+  virginica       0          1        19</code></pre>
 </div>
 </div>
 

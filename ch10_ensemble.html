@@ -215,6 +215,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#train-a-random-forest-classifier" id="toc-train-a-random-forest-classifier" class="nav-link" data-scroll-target="#train-a-random-forest-classifier"><span class="header-section-number">10.1.2</span> Train a random forest classifier</a></li>
   <li><a href="#use-different-engine" id="toc-use-different-engine" class="nav-link" data-scroll-target="#use-different-engine"><span class="header-section-number">10.1.3</span> Use different engine</a></li>
   </ul></li>
+  <li><a href="#examples-10.5" id="toc-examples-10.5" class="nav-link" data-scroll-target="#examples-10.5"><span class="header-section-number">10.2</span> Examples 10.5</a>
+  <ul class="collapse">
+  <li><a href="#load-data-1" id="toc-load-data-1" class="nav-link" data-scroll-target="#load-data-1"><span class="header-section-number">10.2.1</span> Load data</a></li>
+  <li><a href="#train-gradient-boosting-machine-with-regression-trees" id="toc-train-gradient-boosting-machine-with-regression-trees" class="nav-link" data-scroll-target="#train-gradient-boosting-machine-with-regression-trees"><span class="header-section-number">10.2.2</span> Train gradient boosting machine with regression trees</a></li>
+  </ul></li>
+  <li><a href="#examples-10.6" id="toc-examples-10.6" class="nav-link" data-scroll-target="#examples-10.6"><span class="header-section-number">10.3</span> Examples 10.6</a>
+  <ul class="collapse">
+  <li><a href="#load-data-2" id="toc-load-data-2" class="nav-link" data-scroll-target="#load-data-2"><span class="header-section-number">10.3.1</span> Load data</a></li>
+  <li><a href="#create-a-gbm-classifier-workflow-and-train-the-model" id="toc-create-a-gbm-classifier-workflow-and-train-the-model" class="nav-link" data-scroll-target="#create-a-gbm-classifier-workflow-and-train-the-model"><span class="header-section-number">10.3.2</span> Create a GBM classifier workflow and train the model</a></li>
+  <li><a href="#prediction-1" id="toc-prediction-1" class="nav-link" data-scroll-target="#prediction-1"><span class="header-section-number">10.3.3</span> Prediction</a></li>
+  <li><a href="#replace-engine-with-lightgbm" id="toc-replace-engine-with-lightgbm" class="nav-link" data-scroll-target="#replace-engine-with-lightgbm"><span class="header-section-number">10.3.4</span> Replace engine with <code>{lightgbm}</code></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -270,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -281,7 +293,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Search for functions across packages at https://www.tidymodels.org/find/</code></pre>
+• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
 </div>
 </div>
 <section id="examples-10.2" class="level2" data-number="10.1">
@@ -387,7 +399,7 @@ Mtry:                             2
 Target node size:                 2 
 Variable importance mode:         none 
 Splitrule:                        gini 
-OOB prediction error (Brier s.):  0.2695312 </code></pre>
+OOB prediction error (Brier s.):  0.65 </code></pre>
 </div>
 </div>
 </section>
@@ -425,11 +437,370 @@ Call:
                      Number of trees: 4
 No. of variables tried at each split: 2
 
-        OOB estimate of  error rate: 66.67%
+        OOB estimate of  error rate: 50%
 Confusion matrix:
     no yes class.error
-no   1   1         0.5
-yes  1   0         1.0</code></pre>
+no   2   0           0
+yes  2   0           1</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="examples-10.5" class="level2" data-number="10.2">
+<h2 data-number="10.2" class="anchored" data-anchor-id="examples-10.5"><span class="header-section-number">10.2</span> Examples 10.5</h2>
+<section id="load-data-1" class="level3" data-number="10.2.1">
+<h3 data-number="10.2.1" class="anchored" data-anchor-id="load-data-1"><span class="header-section-number">10.2.1</span> Load data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch10_dat3.csv"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 20 Columns: 2
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (2): X, Y
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 2
+       X     Y
+   &lt;dbl&gt; &lt;dbl&gt;
+ 1  -5   0.03 
+ 2  -4.5 0.113
+ 3  -4   0.066
+ 4  -3.5 0.136
+ 5  -3   0.108
+ 6  -2.5 0.05 
+ 7  -2   0.076
+ 8  -1.5 0.26 
+ 9  -1   0.216
+10  -0.5 0.406
+11   0.5 0.588
+12   1   0.775
+13   1.5 0.853
+14   2   0.931
+15   2.5 0.95 
+16   3   0.922
+17   3.5 0.991
+18   4   0.973
+19   4.5 0.894
+20   5   0.977</code></pre>
+</div>
+</div>
+</section>
+<section id="train-gradient-boosting-machine-with-regression-trees" class="level3" data-number="10.2.2">
+<h3 data-number="10.2.2" class="anchored" data-anchor-id="train-gradient-boosting-machine-with-regression-trees"><span class="header-section-number">10.2.2</span> Train gradient boosting machine with regression trees</h3>
+<p>Tidymodels framework supports gradient boosting machine with a decision tree as each component model.</p>
+<section id="recipe" class="level4" data-number="10.2.2.1">
+<h4 data-number="10.2.2.1" class="anchored" data-anchor-id="recipe"><span class="header-section-number">10.2.2.1</span> Recipe</h4>
+<p>In this example, no specific data preprocessing is required, other than defining input and output variables from training data.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>gbm_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(Y <span class="sc">~</span> X, dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="model-1" class="level4" data-number="10.2.2.2">
+<h4 data-number="10.2.2.2" class="anchored" data-anchor-id="model-1"><span class="header-section-number">10.2.2.2</span> Model</h4>
+<p>Use <code>boost_tree()</code> to define a gradient boosting machine. You can pass various hyperparameters. Here, we will specify only three of them here.</p>
+<ul>
+<li><code>trees</code>: the number of trees in the ensemble</li>
+<li><code>tree_depth</code>: the maximum depth of each tree</li>
+<li><code>learn_rate</code>: step size to be used in iterative update</li>
+</ul>
+<p>In contrast to random forest that we set <code>min_n = 2</code> to generate maximal tree, we will set <code>tree_depth = 1</code> to generate a shallow tree with only one split per each tree. This is a fundamentally different training strategy between random forest and gradient boosting machine.</p>
+<p>Set <code>learn_rate = 1</code> for this particular example for demonstration, but this is probably better to be jointly tuned with <code>trees</code> parameter. The smaller <code>learn_rate</code> value, the smaller update in a model output in each iteration, which requires the larger value of <code>trees</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>gbm_model <span class="ot">&lt;-</span> </span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">boost_tree</span>(<span class="at">trees =</span> <span class="dv">5</span>, <span class="at">tree_depth =</span> <span class="dv">1</span>, <span class="at">learn_rate =</span> <span class="dv">1</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"regression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="workflow-1" class="level4" data-number="10.2.2.3">
+<h4 data-number="10.2.2.3" class="anchored" data-anchor-id="workflow-1"><span class="header-section-number">10.2.2.3</span> Workflow</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>gbm_wflow <span class="ot">&lt;-</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(gbm_rec) <span class="sc">|&gt;</span> </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(gbm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="train-a-model-1" class="level4" data-number="10.2.2.4">
+<h4 data-number="10.2.2.4" class="anchored" data-anchor-id="train-a-model-1"><span class="header-section-number">10.2.2.4</span> Train a model</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  gbm_wflow <span class="sc">|&gt;</span> </span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="prediction" class="level4" data-number="10.2.2.5">
+<h4 data-number="10.2.2.5" class="anchored" data-anchor-id="prediction"><span class="header-section-number">10.2.2.5</span> Prediction</h4>
+<p>Make a prediction on training data, by calling <code>predict()</code> function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="sc">|&gt;</span> </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="fu">predict</span>(gbm_fit, <span class="at">new_data =</span> dat))</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 20 × 3
+       X     Y  .pred
+   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt;
+ 1  -5   0.03  0.0808
+ 2  -4.5 0.113 0.0808
+ 3  -4   0.066 0.0808
+ 4  -3.5 0.136 0.0808
+ 5  -3   0.108 0.0808
+ 6  -2.5 0.05  0.0808
+ 7  -2   0.076 0.0808
+ 8  -1.5 0.26  0.214 
+ 9  -1   0.216 0.214 
+10  -0.5 0.406 0.214 
+11   0.5 0.588 0.819 
+12   1   0.775 0.819 
+13   1.5 0.853 0.872 
+14   2   0.931 0.941 
+15   2.5 0.95  0.941 
+16   3   0.922 0.941 
+17   3.5 0.991 0.941 
+18   4   0.973 0.941 
+19   4.5 0.894 0.941 
+20   5   0.977 0.941 </code></pre>
+</div>
+</div>
+<p>Evaluate the regression performance based on root mean squared error, mean absolute error, and mean absolute percent error.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>multi_metric <span class="ot">&lt;-</span> <span class="fu">metric_set</span>(rmse, mae, mape)</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multi_metric</span>(<span class="at">truth =</span> Y, <span class="at">estimate =</span> .pred)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 rmse    standard      0.0744
+2 mae     standard      0.0476
+3 mape    standard     24.4   </code></pre>
+</div>
+</div>
+</section>
+<section id="estimated-function" class="level4" data-number="10.2.2.6">
+<h4 data-number="10.2.2.6" class="anchored" data-anchor-id="estimated-function"><span class="header-section-number">10.2.2.6</span> Estimated function</h4>
+<p>Let us make a prediction on various input values.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>new_data <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">X =</span> <span class="fu">seq</span>(<span class="fu">min</span>(dat<span class="sc">$</span>X), <span class="fu">max</span>(dat<span class="sc">$</span>X), <span class="at">length =</span> <span class="dv">100</span>))</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>new_results <span class="ot">&lt;-</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  new_data <span class="sc">|&gt;</span> </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(<span class="fu">predict</span>(gbm_fit, <span class="at">new_data =</span> new_data))</span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>new_results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 100 × 2
+       X  .pred
+   &lt;dbl&gt;  &lt;dbl&gt;
+ 1 -5    0.0808
+ 2 -4.90 0.0808
+ 3 -4.80 0.0808
+ 4 -4.70 0.0808
+ 5 -4.60 0.0808
+ 6 -4.49 0.0808
+ 7 -4.39 0.0808
+ 8 -4.29 0.0808
+ 9 -4.19 0.0808
+10 -4.09 0.0808
+# ℹ 90 more rows</code></pre>
+</div>
+</div>
+<p>Let us visualize the estimated function of gradient boosting machine as a line, while visualizing training data as points.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>new_results <span class="sc">|&gt;</span> </span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> X, <span class="at">y =</span> .pred)) <span class="sc">+</span> </span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">color =</span> <span class="st">"firebrick"</span>) <span class="sc">+</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">y =</span> Y), <span class="at">data =</span> results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch10_ensemble_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="examples-10.6" class="level2" data-number="10.3">
+<h2 data-number="10.3" class="anchored" data-anchor-id="examples-10.6"><span class="header-section-number">10.3</span> Examples 10.6</h2>
+<p>Now let’s take a look at GBM classifier.</p>
+<section id="load-data-2" class="level3" data-number="10.3.1">
+<h3 data-number="10.3.1" class="anchored" data-anchor-id="load-data-2"><span class="header-section-number">10.3.1</span> Load data</h3>
+<p>Convert output as a factor before passing it to a workflow.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"data/ch8_dat1.csv"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">class =</span> <span class="fu">factor</span>(class))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Rows: 10 Columns: 3
+── Column specification ────────────────────────────────────────────────────────
+Delimiter: ","
+dbl (3): x1, x2, class
+
+ℹ Use `spec()` to retrieve the full column specification for this data.
+ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 3
+      x1    x2 class
+   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt;
+ 1     1     4 1    
+ 2     2     6 1    
+ 3     2     5 1    
+ 4     2     4 2    
+ 5     2     3 2    
+ 6     3     6 1    
+ 7     4     6 1    
+ 8     4     5 2    
+ 9     4     4 2    
+10     5     4 2    </code></pre>
+</div>
+</div>
+</section>
+<section id="create-a-gbm-classifier-workflow-and-train-the-model" class="level3" data-number="10.3.2">
+<h3 data-number="10.3.2" class="anchored" data-anchor-id="create-a-gbm-classifier-workflow-and-train-the-model"><span class="header-section-number">10.3.2</span> Create a GBM classifier workflow and train the model</h3>
+<p>The process is almost identical to GBM regression model, except the model mode is <code>"classification"</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>gbm_rec <span class="ot">&lt;-</span> <span class="fu">recipe</span>(class <span class="sc">~</span> ., <span class="at">data =</span> dat)</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>gbm_model <span class="ot">&lt;-</span> </span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">boost_tree</span>(<span class="at">trees =</span> <span class="dv">10</span>, <span class="at">tree_depth =</span> <span class="dv">1</span>, <span class="at">learn_rate =</span> <span class="fl">0.5</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"xgboost"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>gbm_wflow <span class="ot">&lt;-</span> </span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">workflow</span>() <span class="sc">|&gt;</span> </span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_recipe</span>(gbm_rec) <span class="sc">|&gt;</span> </span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add_model</span>(gbm_model)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>  gbm_wflow <span class="sc">|&gt;</span> </span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="prediction-1" class="level3" data-number="10.3.3">
+<h3 data-number="10.3.3" class="anchored" data-anchor-id="prediction-1"><span class="header-section-number">10.3.3</span> Prediction</h3>
+<p>Make a prediction on training data. In addition to the classification results, add posterior as additional columns in output data frame, by calling <code>predict()</code> with <code>type = "prob"</code> argument.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  dat <span class="sc">|&gt;</span> </span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(gbm_fit, <span class="at">new_data =</span> dat, <span class="at">type =</span> <span class="st">"class"</span>),</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(gbm_fit, <span class="at">new_data =</span> dat, <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 6
+      x1    x2 class .pred_class .pred_1 .pred_2
+   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+ 1     1     4 1     2             0.323   0.677
+ 2     2     6 1     1             0.792   0.208
+ 3     2     5 1     1             0.792   0.208
+ 4     2     4 2     2             0.323   0.677
+ 5     2     3 2     2             0.323   0.677
+ 6     3     6 1     1             0.677   0.323
+ 7     4     6 1     1             0.677   0.323
+ 8     4     5 2     1             0.677   0.323
+ 9     4     4 2     2             0.208   0.792
+10     5     4 2     2             0.208   0.792</code></pre>
+</div>
+</div>
+<p>Draw ROC curve. In tidymodels framework, ROC curve and AUC is using the first class level as “event” by default. To let the second class level be the “event”, pass <code>event_level = "second"</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> class, .pred_2, <span class="at">event_level =</span> <span class="st">"second"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch10_ensemble_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Compute AUC</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(<span class="at">truth =</span> class, .pred_2, <span class="at">event_level =</span> <span class="st">"second"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary          0.88</code></pre>
+</div>
+</div>
+</section>
+<section id="replace-engine-with-lightgbm" class="level3" data-number="10.3.4">
+<h3 data-number="10.3.4" class="anchored" data-anchor-id="replace-engine-with-lightgbm"><span class="header-section-number">10.3.4</span> Replace engine with <code>{lightgbm}</code></h3>
+<p><a href="https://lightgbm.readthedocs.io/en/stable/">LightGBM</a> is another popular engine for gradient boosting machine. To use this engine within tidymodels framework, you need to install and load parsnip extension package <code>{bonsai}</code>.</p>
+<p>At this time, let us set hyperparameter values to be <code>tree_depth = 1</code> and <code>min_n</code>, while use engine’s default values for other hyperparamters.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bonsai)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>gbm_model <span class="ot">&lt;-</span> </span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">boost_tree</span>(<span class="at">tree_depth =</span> <span class="dv">1</span>, <span class="at">min_n =</span> <span class="dv">2</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_engine</span>(<span class="st">"lightgbm"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">set_mode</span>(<span class="st">"classification"</span>)</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>gbm_wflow <span class="ot">&lt;-</span> </span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  gbm_wflow <span class="sc">|&gt;</span> </span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">update_model</span>(gbm_model)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>With the updated workflow, let us repeat the same training, prediction, and evaluation process.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>gbm_fit <span class="ot">&lt;-</span> </span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  gbm_wflow <span class="sc">|&gt;</span> </span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">fit</span>(dat)</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> </span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a>  dat <span class="sc">|&gt;</span> </span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">bind_cols</span>(</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(gbm_fit, <span class="at">new_data =</span> dat, <span class="at">type =</span> <span class="st">"class"</span>),</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">predict</span>(gbm_fit, <span class="at">new_data =</span> dat, <span class="at">type =</span> <span class="st">"prob"</span>)</span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a>results</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 10 × 6
+      x1    x2 class .pred_class .pred_1 .pred_2
+   &lt;dbl&gt; &lt;dbl&gt; &lt;fct&gt; &lt;fct&gt;         &lt;dbl&gt;   &lt;dbl&gt;
+ 1     1     4 1     2            0.332   0.668 
+ 2     2     6 1     1            0.957   0.0426
+ 3     2     5 1     1            0.957   0.0426
+ 4     2     4 2     2            0.332   0.668 
+ 5     2     3 2     2            0.332   0.668 
+ 6     3     6 1     1            0.668   0.332 
+ 7     4     6 1     1            0.668   0.332 
+ 8     4     5 2     1            0.668   0.332 
+ 9     4     4 2     2            0.0426  0.957 
+10     5     4 2     2            0.0426  0.957 </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_curve</span>(<span class="at">truth =</span> class, .pred_2, <span class="at">event_level =</span> <span class="st">"second"</span>) <span class="sc">|&gt;</span> </span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">autoplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="ch10_ensemble_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>results <span class="sc">|&gt;</span> </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">roc_auc</span>(<span class="at">truth =</span> class, .pred_2, <span class="at">event_level =</span> <span class="st">"second"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 3
+  .metric .estimator .estimate
+  &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+1 roc_auc binary          0.88</code></pre>
 </div>
 </div>
 
