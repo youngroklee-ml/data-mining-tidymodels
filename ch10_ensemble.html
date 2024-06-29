@@ -282,7 +282,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 <div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tidymodels_conflicts</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -293,7 +293,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 ✖ dplyr::lag()      masks stats::lag()
 ✖ yardstick::spec() masks readr::spec()
 ✖ recipes::step()   masks stats::step()
-• Learn how to get started at https://www.tidymodels.org/start/</code></pre>
+• Use suppressPackageStartupMessages() to eliminate package startup messages</code></pre>
 </div>
 </div>
 <section id="examples-10.2" class="level2" data-number="10.1">
@@ -399,7 +399,7 @@ Mtry:                             2
 Target node size:                 2 
 Variable importance mode:         none 
 Splitrule:                        gini 
-OOB prediction error (Brier s.):  0.65 </code></pre>
+OOB prediction error (Brier s.):  0.3125 </code></pre>
 </div>
 </div>
 </section>
@@ -437,10 +437,10 @@ Call:
                      Number of trees: 4
 No. of variables tried at each split: 2
 
-        OOB estimate of  error rate: 50%
+        OOB estimate of  error rate: 40%
 Confusion matrix:
     no yes class.error
-no   2   0           0
+no   3   0           0
 yes  2   0           1</code></pre>
 </div>
 </div>

@@ -214,7 +214,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface"><span class="header-section-number">1</span> Preface</a>
   <ul class="collapse">
   <li><a href="#tidymodels" id="toc-tidymodels" class="nav-link" data-scroll-target="#tidymodels"><span class="header-section-number">1.1</span> Tidymodels</a></li>
-  <li><a href="#model-engine-packages" id="toc-model-engine-packages" class="nav-link" data-scroll-target="#model-engine-packages"><span class="header-section-number">1.2</span> Model engine packages</a></li>
+  <li><a href="#additional-interface-package-for-tidyclust" id="toc-additional-interface-package-for-tidyclust" class="nav-link" data-scroll-target="#additional-interface-package-for-tidyclust"><span class="header-section-number">1.2</span> Additional interface package for <code>{tidyclust}</code></a></li>
+  <li><a href="#model-engine-packages" id="toc-model-engine-packages" class="nav-link" data-scroll-target="#model-engine-packages"><span class="header-section-number">1.3</span> Model engine packages</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -260,12 +261,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 data-number="1.1" class="anchored" data-anchor-id="tidymodels"><span class="header-section-number">1.1</span> Tidymodels</h2>
 <p>The tidymodels framework is a collection of packages to provide intuitive and unified interface for modeling and machine learning. To get more information, please see the following materials:</p>
 <ul>
-<li>tidymodels website: <a href="https://www.tidymodels.org">https://www.tidymodels.org</a></li>
+<li><code>{tidymodels}</code> website: <a href="https://www.tidymodels.org">https://www.tidymodels.org</a></li>
 <li>“Tidy modeling with R” by Max Kuhn and Julia Silge: <a href="https://www.tmwr.org">https://www.tmwr.org</a></li>
 </ul>
 </section>
-<section id="model-engine-packages" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="model-engine-packages"><span class="header-section-number">1.2</span> Model engine packages</h2>
+<section id="additional-interface-package-for-tidyclust" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="additional-interface-package-for-tidyclust"><span class="header-section-number">1.2</span> Additional interface package for <code>{tidyclust}</code></h2>
+<p>Clustering is not supported in core <code>{tidymodels}</code>. To conduct cluster analysis, use <code>{tidyclust}</code>.</p>
+</section>
+<section id="model-engine-packages" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="model-engine-packages"><span class="header-section-number">1.3</span> Model engine packages</h2>
 <p>Each modeling packages need to be separately installed to use it within the tidymodels framework. Example codes in this book require the following R packages.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(glmnet)</span>
