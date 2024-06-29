@@ -164,7 +164,8 @@ Let us use leave-one-out (LOO) cross-validation to tune the hyperparameter value
 dat2_cv <- vfold_cv(dat2, v = nrow(dat2))
 ```
 
-By default, it will try number of clusters from 1 to 10. You can change the range of the number of clusters as the same to supervised learning, by using a parameter set object.
+By default, it will try number of clusters from 1 to 10. You can change the range of the number of clusters as the same to supervised learning, by using a parameter set object. Please note that `tune_cluster()` from `{tidyclust}` is used as a function to execute hyperparameter tuning.
+
 
 ```{r}
 hc_set <- 
@@ -180,7 +181,7 @@ hc_grid <- tune_cluster(
 )
 ```
 
-Or, you can create an explicit grid of hyperparameter values that you want to try.
+Or, you can create an explicit grid of hyperparameter values that you want to try. `grid_regular()` is a function in `{dials}`, a part of `{tidymodels}`, to create a grid with regular intervals that values are equally spread.
 
 ```{r}
 clust_num_grid <- grid_regular(
@@ -199,7 +200,7 @@ hc_grid <- tune_cluster(
 ```
 
 
-Let us see the cross-validated average silhouette by the number of clusters.
+Let us see the cross-validated average silhouette by the number of clusters. `tune::collect_metrics()` is a function to summarize cross validation results into a data frame.
 
 ```{r}
 hc_grid |> 
