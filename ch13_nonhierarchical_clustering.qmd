@@ -1,0 +1,145 @@
+# Non-hierarchical clustering
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(tidyclust)
+```
+
+## Example 13.1
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch12_dat1.csv")
+dat1
+```
+
+### Create a workflow for K-means
+
+A workflow of K-means clustering is almost identical to a workflow of hierarchical clustering that was discussed in previous chapter.
+
+#### Recipe
+
+```{r}
+km_rec <- recipe(~ X1 + X2, data = dat1)
+```
+
+#### Model
+
+Use `k_means()` for K-means clustering. It takes only one hyperparameter, `num_clusters`. Let us leave it as a placeholder and tune it later through cross-validation.
+
+```{r}
+km_model <- k_means(num_clusters = tune())
+```
+
+#### Workflow
+
+```{r}
+km_wflow <-
+  workflow() |> 
+  add_recipe(km_rec) |> 
+  add_model(km_model)
+```
+
+### Optimize hyperparameter
+
+Parameter optimization is essentially the same to it for hierarchical clustering. In this example, let us use 5-fold cross-validation with repeating the process 5 times.
+
+```{r}
+dat1_cv <- vfold_cv(dat1, v = 5, repeats = 5)
+
+clust_num_grid <- grid_regular(
+  num_clusters(range = c(1L, 7L)),
+  levels = 7
+)
+
+km_grid <-
+  km_wflow |> 
+  tune_cluster(
+    resamples = dat1_cv,
+    grid = clust_num_grid,
+    metrics = cluster_metric_set(silhouette_avg)
+  )
+
+km_cv_silhouette <-
+  km_grid |> 
+  collect_metrics() |> 
+  filter(.metric == "silhouette_avg") |> 
+  replace_na(list(mean = 0))
+```
+
+Let us visualize the average silhouette.
+
+```{r}
+km_cv_silhouette |> 
+  ggplot(aes(x = num_clusters, y = mean)) + 
+  geom_line() + 
+  geom_point() +
+  scale_x_continuous(breaks = seq(1, 7, by = 1)) +
+  labs(title = "Average Silouette: leave-one-out cross-validation")
+```
+
+The optimal number of cluster drives the maximum average silhouette value.
+
+```{r}
+optimal_param <-
+  km_cv_silhouette |> 
+  slice_max(mean, n = 1, with_ties = FALSE)
+
+optimal_param
+```
+
+
+### Estimate a final model
+
+Let us finalize the training with the optimal hyperparameter value.
+
+```{r}
+km_fit <-
+  km_wflow |> 
+  finalize_workflow_tidyclust(optimal_param) |> 
+  fit(dat1)
+```
+
+See centroid if each cluster.
+
+```{r}
+extract_centroids(km_fit)
+```
+
+See cluster assignment for each training data.
+
+```{r}
+dat1 |> 
+  bind_cols(
+    extract_cluster_assignment(km_fit)
+  )
+```
+
+
+### Prediction
+
+Let us assume you obtained new data, and you want to assign new data to its closest cluster.
+
+```{r}
+new_data <- tribble(
+  ~X1, ~X2,
+  5, 5,
+  5, 15,
+  15, 5,
+  10, 10
+)
+```
+
+Call `predict()` by passing estimated k-Means model and new observations that you want to make cluster assignment.
+
+```{r}
+new_data |> 
+  bind_cols(
+    predict(km_fit, new_data = new_data)
+  )
+```
+
+
+
