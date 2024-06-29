@@ -1,0 +1,125 @@
+# Hierarchical clustering
+
+```{r}
+library(tidyverse)
+library(tidymodels)
+library(tidyclust)
+```
+
+
+## Example 12.1
+
+### Load data
+
+```{r}
+dat1 <- read_csv("data/ch12_dat1.csv")
+dat1
+```
+
+### Create a workflow
+
+A workflow of clustering is very similar to a workflow of regression and classification that already discussed in previous chapters.
+
+#### Define a recipe
+
+First, create a recipe. Here, because clustering is unsupervised learning, there is no outcome variable.
+
+```{r}
+hc_rec <- recipe(~ X1 + X2, data = dat1)
+```
+
+#### Define a model
+
+For hierarchical clustering with agglomeration methods, use `hier_clust()` from `{tidyclust}` package. For clustering based on partitioning methods, the `mode` is set to be `"partition"` by default. Also, by default, it uses `{stats}` package as an engine, i.e. `engine = "stats"`.  As of 2024-06-28, these default values are the only possible values for `mode` and `engine` parameters.
+
+To obtain cluster solution on training data, set either `num_clusters` to find solution based on the number of clusters set `cut_height` to cut dendrogram at a certain height. In this example, let us set `num_clusters = 3` to find a 3-cluster solution.
+
+`linkage_method` is to specify the agglomeration method. In this example, set `linkage_method = "average"` to apply average linkage method.
+
+```{r}
+hc_model <- hier_clust(num_clusters = 3, linkage_method = "average")
+```
+
+#### Combine into a workflow
+
+Create a workflow by adding a recipe and a model definition.
+
+```{r}
+hc_wflow <-
+  workflow() |> 
+  add_recipe(hc_rec) |> 
+  add_model(hc_model)
+```
+
+### Training
+
+Fit a model by calling `fit()` function with training data as an argument.
+
+```{r}
+hc_fit <- 
+  hc_wflow |> 
+  fit(dat1)
+```
+
+
+### Explore cluster solutions
+
+#### Dendrogram
+
+There is no `{tidyclust}` function to draw a dendrogram. Instead, extract an engine object by calling `extract_fit_parsnip()` and `extract_fit_engine()` sequentially, and call `plot()` function.
+
+```{r}
+hc_fit |> 
+  extract_fit_parsnip() |> 
+  extract_fit_engine() |> 
+  plot()
+```
+
+:::{.callout-note}
+Although a model interface is from `{tidyclust}`, `extract_fit_parsnip()` still extract the model interface object.
+
+```{r}
+hc_fit |> 
+  extract_fit_parsnip() |> 
+  class()
+```
+:::
+
+
+#### Model outputs
+
+`extract_fit_summary()` function returns a list of various outputs including a centroid of each cluster, number of observations in each cluster, within-cluster distance to centroid, and cluster assignment solution.
+
+```{r}
+hc_fit |> 
+  extract_fit_summary()
+```
+
+There are separate functions to extract each output elements.
+
+
+#### Cluster centroid
+
+Call `extract_centroids()` to obtain centroid of clusters as a data frame; one row per cluster.
+
+```{r}
+hc_fit |> 
+  extract_centroids()
+```
+
+#### Cluster assignment
+
+Call `extract_cluster_assignment()` to obtain cluster assignment of each training observation.
+
+```{r}
+hc_fit |> 
+  extract_cluster_assignment()
+```
+
+#### Sum of distance to centroid within each cluster
+
+```{r}
+hc_fit |> 
+  sse_within()
+```
+
