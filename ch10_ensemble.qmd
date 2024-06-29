@@ -98,3 +98,226 @@ rf_fit <-
 rf_fit
 ```
 
+
+
+## Examples 10.5
+
+### Load data
+
+```{r}
+dat <- read_csv("data/ch10_dat3.csv")
+dat
+```
+
+### Train gradient boosting machine with regression trees
+
+Tidymodels framework supports gradient boosting machine with a decision tree as each component model.
+
+#### Recipe
+
+In this example, no specific data preprocessing is required, other than defining input and output variables from training data.
+
+```{r}
+gbm_rec <- recipe(Y ~ X, dat)
+```
+
+#### Model
+
+Use `boost_tree()` to define a gradient boosting machine. You can pass various hyperparameters. Here, we will specify only three of them here.
+
+- `trees`: the number of trees in the ensemble
+- `tree_depth`: the maximum depth of each tree
+- `learn_rate`: step size to be used in iterative update
+
+In contrast to random forest that we set `min_n = 2` to generate maximal tree, we will set `tree_depth = 1` to generate a shallow tree with only one split per each tree. This is a fundamentally different training strategy between random forest and gradient boosting machine. 
+
+Set `learn_rate = 1` for this particular example for demonstration, but this is probably better to be jointly tuned with `trees` parameter. The smaller `learn_rate` value, the smaller update in a model output in each iteration, which requires the larger value of `trees`.
+
+```{r}
+gbm_model <- 
+  boost_tree(trees = 5, tree_depth = 1, learn_rate = 1) |> 
+  set_engine("xgboost") |> 
+  set_mode("regression")
+```
+
+
+#### Workflow
+
+```{r}
+gbm_wflow <-
+  workflow() |> 
+  add_recipe(gbm_rec) |> 
+  add_model(gbm_model)
+```
+
+
+#### Train a model
+
+```{r}
+gbm_fit <-
+  gbm_wflow |> 
+  fit(dat)
+```
+
+
+#### Prediction
+
+Make a prediction on training data, by calling `predict()` function.
+
+```{r}
+results <- 
+  dat |> 
+  bind_cols(predict(gbm_fit, new_data = dat))
+
+results
+```
+
+Evaluate the regression performance based on root mean squared error, mean absolute error, and mean absolute percent error.
+
+```{r}
+multi_metric <- metric_set(rmse, mae, mape)
+
+results |> 
+  multi_metric(truth = Y, estimate = .pred)
+```
+
+
+#### Estimated function
+
+Let us make a prediction on various input values.
+
+```{r}
+new_data <- tibble(X = seq(min(dat$X), max(dat$X), length = 100))
+
+new_results <-
+  new_data |> 
+  bind_cols(predict(gbm_fit, new_data = new_data))
+
+new_results
+```
+
+Let us visualize the estimated function of gradient boosting machine as a line, while visualizing training data as points.
+
+```{r}
+new_results |> 
+  ggplot(aes(x = X, y = .pred)) + 
+  geom_line(color = "firebrick") +
+  geom_point(aes(y = Y), data = results)
+```
+
+
+
+
+## Examples 10.6
+
+Now let's take a look at GBM classifier.
+
+### Load data
+
+Convert output as a factor before passing it to a workflow.
+
+```{r}
+dat <- read_csv("data/ch8_dat1.csv") |> 
+  mutate(class = factor(class))
+dat
+```
+
+
+### Create a GBM classifier workflow and train the model
+
+The process is almost identical to GBM regression model, except the model mode is `"classification"`. 
+
+```{r}
+gbm_rec <- recipe(class ~ ., data = dat)
+
+gbm_model <- 
+  boost_tree(trees = 10, tree_depth = 1, learn_rate = 0.5) |> 
+  set_engine("xgboost") |> 
+  set_mode("classification")
+
+gbm_wflow <- 
+  workflow() |> 
+  add_recipe(gbm_rec) |> 
+  add_model(gbm_model)
+
+gbm_fit <- 
+  gbm_wflow |> 
+  fit(dat)
+```
+
+
+### Prediction
+
+Make a prediction on training data. In addition to the classification results, add posterior as additional columns in output data frame, by calling `predict()` with `type = "prob"` argument.
+
+```{r}
+results <- 
+  dat |> 
+  bind_cols(
+    predict(gbm_fit, new_data = dat, type = "class"),
+    predict(gbm_fit, new_data = dat, type = "prob")
+  )
+
+results
+```
+
+Draw ROC curve. In tidymodels framework, ROC curve and AUC is using the first class level as "event" by default. To let the second class level be the "event", pass `event_level = "second"`.
+
+```{r}
+results |> 
+  roc_curve(truth = class, .pred_2, event_level = "second") |> 
+  autoplot()
+```
+
+Compute AUC
+
+```{r}
+results |> 
+  roc_auc(truth = class, .pred_2, event_level = "second")
+```
+
+
+
+### Replace engine with `{lightgbm}`
+
+[LightGBM](https://lightgbm.readthedocs.io/en/stable/) is another popular engine for gradient boosting machine. To use this engine within tidymodels framework, you need to install and load parsnip extension package `{bonsai}`.
+
+At this time, let us set hyperparameter values to be `tree_depth = 1` and `min_n`, while use engine's default values for other hyperparamters.
+
+```{r}
+library(bonsai)
+
+gbm_model <- 
+  boost_tree(tree_depth = 1, min_n = 2) |> 
+  set_engine("lightgbm") |> 
+  set_mode("classification")
+
+gbm_wflow <- 
+  gbm_wflow |> 
+  update_model(gbm_model)
+```
+
+With the updated workflow, let us repeat the same training, prediction, and evaluation process.
+
+```{r}
+gbm_fit <- 
+  gbm_wflow |> 
+  fit(dat)
+
+results <- 
+  dat |> 
+  bind_cols(
+    predict(gbm_fit, new_data = dat, type = "class"),
+    predict(gbm_fit, new_data = dat, type = "prob")
+  )
+
+results
+
+results |> 
+  roc_curve(truth = class, .pred_2, event_level = "second") |> 
+  autoplot()
+
+results |> 
+  roc_auc(truth = class, .pred_2, event_level = "second")
+```
+
