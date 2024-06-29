@@ -282,3 +282,17 @@ results <-
 results
 ```
 
+See silhouette value for each training data object.
+
+```{r}
+silhouette(hc_fit, new_data = dat2)
+```
+
+
+Also, see average silhouette value of the final solution.
+
+```{r}
+silhouette_avg(hc_fit, new_data = dat2)
+```
+
+
