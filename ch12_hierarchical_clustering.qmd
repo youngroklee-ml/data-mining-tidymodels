@@ -173,12 +173,13 @@ hc_set <-
   extract_parameter_set_dials() |> 
   update(num_clusters = num_clusters(range(1L, 6L)))
 
-hc_grid <- tune_cluster(
-  hc_wflow,
-  resamples = dat2_cv,
-  param_info = hc_set,
-  metrics = cluster_metric_set(silhouette_avg)
-)
+hc_grid <- 
+  hc_wflow |> 
+  tune_cluster(
+    resamples = dat2_cv,
+    param_info = hc_set,
+    metrics = cluster_metric_set(silhouette_avg)
+  )
 ```
 
 Or, you can create an explicit grid of hyperparameter values that you want to try. `grid_regular()` is a function in `{dials}`, a part of `{tidymodels}`, to create a grid with regular intervals that values are equally spread.
@@ -191,12 +192,14 @@ clust_num_grid <- grid_regular(
 
 clust_num_grid
 
-hc_grid <- tune_cluster(
-  hc_wflow,
-  resamples = dat2_cv,
-  grid = clust_num_grid,
-  metrics = cluster_metric_set(silhouette_avg)
-)
+hc_grid <- 
+  hc_wflow |> 
+  tune_cluster(
+    hc_wflow,
+    resamples = dat2_cv,
+    grid = clust_num_grid,
+    metrics = cluster_metric_set(silhouette_avg)
+  )
 ```
 
 
