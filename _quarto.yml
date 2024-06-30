@@ -19,6 +19,7 @@ book:
     - ch11_cluster.qmd
     - ch12_hierarchical_clustering.qmd
     - ch13_nonhierarchical_clustering.qmd
+  repo-url: https://github.com/youngroklee-ml/data-mining-tidymodels
 
 format:
   html:
